@@ -19,116 +19,116 @@
 
 ## タスク
 
-- [ ] 1. Phase 0: shared パッケージの Zod スキーマ・型定義
-  - [ ] 1.1 ブロック関連スキーマの定義（block.ts）
+- [x] 1. Phase 0: shared パッケージの Zod スキーマ・型定義
+  - [x] 1.1 ブロック関連スキーマの定義（block.ts）
     - `BlockSchema`, `Vector3Schema`, `DimensionsSchema`, `PropertySetSchema`, `BlockCategoryEnum`, `IfcElementTypeEnum` を定義
     - `packages/shared/src/models/block.ts` を作成
     - _要件: 1.1, 1.4, 2.1, 3.1_
-  - [ ] 1.2 工程情報スキーマの定義（schedule.ts）
+  - [x] 1.2 工程情報スキーマの定義（schedule.ts）
     - `ScheduleInfoSchema`, `DependencySchema`, `DependencyTypeEnum`, `ProgressStatusEnum` を定義
     - `packages/shared/src/models/schedule.ts` を作成
     - _要件: 4.1, 4.2, 4.3_
-  - [ ] 1.3 プロジェクトスキーマの定義（project.ts）
+  - [x] 1.3 プロジェクトスキーマの定義（project.ts）
     - `ProjectSchema`, `ProjectSummarySchema`, `ProjectMetadataSchema`, `ProjectStatusEnum` を定義
     - `packages/shared/src/models/project.ts` を作成
     - _要件: 13.1, 24.1_
-  - [ ] 1.4 シミュレーション結果スキーマの定義（simulation-result.ts）
+  - [x] 1.4 シミュレーション結果スキーマの定義（simulation-result.ts）
     - `QuantityResultSchema`, `CostResultSchema`, `ClashResultSchema`, `CriticalPathResultSchema`, `StructureCheckResultSchema`, `RegulationCheckResultSchema` を定義
     - `packages/shared/src/models/simulation-result.ts` を作成
     - _要件: 8.1, 9.1, 10.1, 6.1, 18.1, 19.1_
-  - [ ] 1.5 AI 連携結果スキーマの定義（ai-result.ts）
+  - [x] 1.5 AI 連携結果スキーマの定義（ai-result.ts）
     - `BlockGenerationResultSchema`, `ImageAnalysisResultSchema`, `StructureSuggestionSchema` を定義
     - `packages/shared/src/models/ai-result.ts` を作成
     - _要件: 15.1, 16.1, 17.1_
-  - [ ] 1.6 shared の index.ts を更新し全スキーマ・型をエクスポート
+  - [x] 1.6 shared の index.ts を更新し全スキーマ・型をエクスポート
     - `packages/shared/src/index.ts` に全モデルの re-export を追加
     - _要件: 全要件共通_
 
-- [ ] 2. Phase 0: shared パッケージのエンジンインターフェース・スタブ実装
-  - [ ] 2.1 数量算出エンジンのインターフェースと Level 0 スタブ
+- [x] 2. Phase 0: shared パッケージのエンジンインターフェース・スタブ実装
+  - [x] 2.1 数量算出エンジンのインターフェースと Level 0 スタブ
     - `packages/shared/src/engines/quantity-engine.ts` を作成
     - 入力: `Block[]` → 出力: `QuantityResult`。Level 0 は固定値 `{ count: 0 }` を返す
     - _要件: 8.1, 8.2_
-  - [ ] 2.2 コスト概算エンジンのインターフェースと Level 0 スタブ
+  - [x] 2.2 コスト概算エンジンのインターフェースと Level 0 スタブ
     - `packages/shared/src/engines/cost-engine.ts` を作成
     - 入力: `Block[]` → 出力: `CostResult`。Level 0 は固定値 `{ total: 0 }` を返す
     - _要件: 9.1, 9.2_
-  - [ ] 2.3 干渉チェックエンジンのインターフェースと Level 0 スタブ
+  - [x] 2.3 干渉チェックエンジンのインターフェースと Level 0 スタブ
     - `packages/shared/src/engines/clash-engine.ts` を作成
     - 入力: `Block[]` → 出力: `ClashResult`。Level 0 は固定値 `{ clashes: [] }` を返す
     - _要件: 10.1, 10.2_
-  - [ ] 2.4 工程管理エンジンのインターフェースと Level 0 スタブ
+  - [x] 2.4 工程管理エンジンのインターフェースと Level 0 スタブ
     - `packages/shared/src/engines/schedule-engine.ts` を作成
     - ガントチャートデータ生成・クリティカルパス分析の関数シグネチャを定義。Level 0 は固定データを返す
     - _要件: 5.1, 6.1_
-  - [ ] 2.5 構造チェック・法規チェック・環境・安全管理エンジンのインターフェースと Level 0 スタブ
+  - [x] 2.5 構造チェック・法規チェック・環境・安全管理エンジンのインターフェースと Level 0 スタブ
     - `packages/shared/src/engines/structure-check-engine.ts`, `regulation-check-engine.ts`, `environment-engine.ts`, `safety-engine.ts` を作成
     - 各エンジンの関数シグネチャを定義。Level 0 は固定値を返す
     - _要件: 18.1, 19.1, 20.1, 21.1_
-  - [ ] 2.6 IFC パーサー・シリアライザーのインターフェースと Level 0 スタブ
+  - [x] 2.6 IFC パーサー・シリアライザーのインターフェースと Level 0 スタブ
     - `packages/shared/src/ifc/ifc-parser.ts`, `ifc-serializer.ts`, `ifc-types.ts` を作成
     - パース・シリアライズの関数シグネチャを定義。Level 0 は固定値を返す
     - _要件: 11.1, 12.1_
-  - [ ] 2.7 JSON シリアライザー・デシリアライザーのインターフェースと Level 0 スタブ
+  - [x] 2.7 JSON シリアライザー・デシリアライザーのインターフェースと Level 0 スタブ
     - `packages/shared/src/serialization/project-serializer.ts`, `project-deserializer.ts` を作成
     - _要件: 14.1, 14.2_
 
-- [ ] 3. Phase 0: backend の Port/Adapter・API ルートスタブ
-  - [ ] 3.1 DbPort インターフェースの拡張
+- [x] 3. Phase 0: backend の Port/Adapter・API ルートスタブ
+  - [x] 3.1 DbPort インターフェースの拡張
     - 既存の `DbPort` にプロジェクト CRUD メソッドを追加（`getProject`, `createProject`, `updateProject`, `deleteProject`, `listProjects`, `duplicateProject`）
     - `packages/backend/src/adapters/db-port.ts` を更新
     - _要件: 13.1, 24.1, 24.3, 24.4, 24.5_
-  - [ ] 3.2 MockDbAdapter の拡張
+  - [x] 3.2 MockDbAdapter の拡張
     - DbPort の新メソッドをインメモリ Map で実装（Level 1 ステートフル）
     - `packages/backend/src/adapters/mock-db-adapter.ts` を更新
     - _要件: 13.1, 24.1_
-  - [ ] 3.3 AIPort インターフェースの定義
+  - [x] 3.3 AIPort インターフェースの定義
     - `chat`, `generateBlocks`, `analyzeImage`, `suggestStructure` メソッドを定義
     - `packages/backend/src/adapters/ai-port.ts` を作成
     - _要件: 15.1, 16.1, 17.1_
-  - [ ] 3.4 MockAIAdapter の実装（Level 0 固定レスポンス）
+  - [x] 3.4 MockAIAdapter の実装（Level 0 固定レスポンス）
     - AIPort の全メソッドに固定レスポンスを返す実装
     - `packages/backend/src/adapters/mock-ai-adapter.ts` を作成
     - _要件: 15.1, 16.1, 17.1_
-  - [ ] 3.5 AI アダプターファクトリの実装
+  - [x] 3.5 AI アダプターファクトリの実装
     - 環境変数に応じた AI アダプター選択ロジック
     - `packages/backend/src/adapters/ai-adapter-factory.ts` を作成
     - _要件: 15.1_
-  - [ ] 3.6 全 Usecase クラスのスタブ実装
+  - [x] 3.6 全 Usecase クラスのスタブ実装
     - `ProjectUsecase`, `SimulationUsecase`, `ScheduleUsecase`, `AIUsecase`, `CheckUsecase` を作成
     - 各メソッドは shared エンジンのスタブを呼び出す
     - `packages/backend/src/usecases/` 配下に作成
     - _要件: 全要件共通_
-  - [ ] 3.7 全 API ルートのスタブ実装
+  - [x] 3.7 全 API ルートのスタブ実装
     - `projectsApp`, `simulationApp`, `scheduleApp`, `checkApp`, `aiApp`, `ifcApp`, `dashboardApp`, `compareApp` を作成
     - 各ルートは Usecase のスタブメソッドを呼び出し、スタブレスポンス（`_stub: true`）を返す
     - `packages/backend/src/api/` 配下に作成
     - _要件: 全要件共通_
-  - [ ] 3.8 Agent 専用エンドポイントのスタブ実装
+  - [x] 3.8 Agent 専用エンドポイントのスタブ実装
     - `@hono/zod-openapi` を使用した `agentApp` を作成
     - 全 Agent エンドポイント（quantity, cost, clash, structure-check, regulation-check, suggest-structure, generate-blocks, project, projects）のスタブ
     - OpenAPI スキーマ出力エンドポイント（`/openapi.json`）
     - `packages/backend/src/api/agent.ts` を作成
     - _要件: 設計書 Agent 専用エンドポイント_
-  - [ ] 3.9 index.ts の更新（全ルートのマウント）
+  - [x] 3.9 index.ts の更新（全ルートのマウント）
     - `packages/backend/src/index.ts` に全サブルーターをマウント
     - _要件: 全要件共通_
 
-- [ ] 4. Phase 0: API 契約テスト + Phase 0 結合テスト
-  - [ ] 4.1 プロジェクト API 契約テスト
+- [x] 4. Phase 0: API 契約テスト + Phase 0 結合テスト
+  - [x] 4.1 プロジェクト API 契約テスト
     - `POST /api/projects`, `GET /api/projects`, `GET /api/projects/:id`, `PUT /api/projects/:id`, `DELETE /api/projects/:id` の Zod スキーマ準拠テスト
     - `packages/backend/test/projects.test.ts` を作成
     - _要件: 13.1, 24.1_
-  - [ ] 4.2 シミュレーション・工程管理・チェック・AI・IFC・ダッシュボード・比較 API 契約テスト
+  - [x] 4.2 シミュレーション・工程管理・チェック・AI・IFC・ダッシュボード・比較 API 契約テスト
     - 全エンドポイントのレスポンスが対応する Zod スキーマに準拠することを検証
     - `packages/backend/test/` 配下に各テストファイルを作成
     - _要件: 8.1, 9.1, 10.1, 5.1, 6.1, 18.1, 19.1, 15.1, 16.1, 11.1, 12.1, 22.1, 23.1_
-  - [ ] 4.3 Agent 専用エンドポイント契約テスト + OpenAPI スキーマ出力テスト
+  - [x] 4.3 Agent 専用エンドポイント契約テスト + OpenAPI スキーマ出力テスト
     - Agent 全エンドポイントの Zod スキーマ準拠テスト
     - `/api/agent/openapi.json` が有効な OpenAPI 3.0 スキーマを返すことを検証
     - `packages/backend/test/agent.test.ts` を作成
     - _要件: 設計書 Agent 専用エンドポイント_
-  - [ ] 4.4 MockDbAdapter CRUD フローテスト
+  - [x] 4.4 MockDbAdapter CRUD フローテスト
     - 作成 → 取得 → 更新 → 削除のフルフローをテスト
     - `packages/backend/test/adapters/mock-db-adapter.test.ts` を作成
     - _要件: 13.1, 24.3, 24.4_
