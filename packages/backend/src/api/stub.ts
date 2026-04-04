@@ -8,3 +8,6 @@ export const STUB_LEVEL_2_PROJECT = {
   _stub: false as const,
   _stubLevel: 2 as const,
 };
+
+/** シミュレーション API（グループ B / Level 2） */
+export const STUB_LEVEL_2_SIMULATION = STUB_LEVEL_2_PROJECT;

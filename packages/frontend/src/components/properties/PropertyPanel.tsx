@@ -8,9 +8,12 @@ import Input from '@cloudscape-design/components/input';
 import Modal from '@cloudscape-design/components/modal';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Table, { type TableProps } from '@cloudscape-design/components/table';
+import Tabs from '@cloudscape-design/components/tabs';
 import type { Block, PropertySet, PropertyValue } from '@block-bim-studio/shared';
+import { syncQtoBaseQuantitiesWithDimensions } from '@block-bim-studio/shared';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ScheduleTab } from '@/components/properties/ScheduleTab';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useProjectStore } from '@/stores/projectStore';
 import { isDefaultPropertySetName } from '@/utils/default-property-sets';
@@ -95,10 +98,10 @@ export function PropertyPanel() {
     });
     if (!ew.ok || !eh.ok || !ed.ok) return;
     if (Object.values(propErrors).some(Boolean)) return;
-    const next: Block = {
+    const next: Block = syncQtoBaseQuantitiesWithDimensions({
       ...draft,
       dimensions: { width: ew.value, height: eh.value, depth: ed.value },
-    };
+    });
     updateBlock(next);
     setDraft(next);
   }, [draft, dimInputs, propErrors, updateBlock]);
@@ -237,90 +240,110 @@ export function PropertyPanel() {
           </Header>
         }
       >
-        <SpaceBetween size="l">
-          <FormField label="名称">
-            <Input
-              value={draft.name}
-              onChange={({ detail }) =>
-                setDraft({ ...draft, name: detail.value })
-              }
-            />
-          </FormField>
-          <FormField label="IFC 要素タイプ">
-            <Box>{draft.ifcType}</Box>
-          </FormField>
-          <FormField label="カテゴリ">
-            <Box>{draft.category}</Box>
-          </FormField>
+        <Tabs
+          tabs={[
+            {
+              id: 'general',
+              label: '基本',
+              content: (
+                <SpaceBetween size="l">
+                  <FormField label="名称">
+                    <Input
+                      value={draft.name}
+                      onChange={({ detail }) =>
+                        setDraft({ ...draft, name: detail.value })
+                      }
+                    />
+                  </FormField>
+                  <FormField label="IFC 要素タイプ">
+                    <Box>{draft.ifcType}</Box>
+                  </FormField>
+                  <FormField label="カテゴリ">
+                    <Box>{draft.category}</Box>
+                  </FormField>
 
-          <Header variant="h3">寸法 (m)</Header>
-          <ColumnFields>
-            <FormField label="幅" errorText={dimErrors.width}>
-              <Input
-                value={dimW}
-                onChange={({ detail }) =>
-                  updateDimensionInput('w', detail.value, 'width')
-                }
-              />
-            </FormField>
-            <FormField label="高さ" errorText={dimErrors.height}>
-              <Input
-                value={dimH}
-                onChange={({ detail }) =>
-                  updateDimensionInput('h', detail.value, 'height')
-                }
-              />
-            </FormField>
-            <FormField label="奥行" errorText={dimErrors.depth}>
-              <Input
-                value={dimD}
-                onChange={({ detail }) =>
-                  updateDimensionInput('d', detail.value, 'depth')
-                }
-              />
-            </FormField>
-          </ColumnFields>
+                  <Header variant="h3">寸法 (m)</Header>
+                  <ColumnFields>
+                    <FormField label="幅" errorText={dimErrors.width}>
+                      <Input
+                        value={dimW}
+                        onChange={({ detail }) =>
+                          updateDimensionInput('w', detail.value, 'width')
+                        }
+                      />
+                    </FormField>
+                    <FormField label="高さ" errorText={dimErrors.height}>
+                      <Input
+                        value={dimH}
+                        onChange={({ detail }) =>
+                          updateDimensionInput('h', detail.value, 'height')
+                        }
+                      />
+                    </FormField>
+                    <FormField label="奥行" errorText={dimErrors.depth}>
+                      <Input
+                        value={dimD}
+                        onChange={({ detail }) =>
+                          updateDimensionInput('d', detail.value, 'depth')
+                        }
+                      />
+                    </FormField>
+                  </ColumnFields>
 
-          <SpaceBetween size="m">
-            {draft.propertySets.map((pset, idx) => {
-              const items: PropertyRow[] = Object.entries(
-                pset.properties,
-              ).map(([key, value]) => ({
-                key,
-                display:
-                  typeof value === 'boolean' ? (value ? 'true' : 'false') : value,
-              }));
-              return (
-                <div key={`${pset.name}-${String(idx)}`}>
-                  <Header
-                    variant="h3"
-                    description={
-                      isDefaultPropertySetName(pset.name)
-                        ? '既定 PropertySet'
-                        : 'カスタム PropertySet'
-                    }
-                  >
-                    {pset.name}
-                  </Header>
-                  <Table
-                    columnDefinitions={propertyTableColumns(pset, idx)}
-                    items={items}
-                    loadingText="読み込み中"
-                    empty={
-                      <Box color="text-body-secondary" padding="s">
-                        プロパティがありません
-                      </Box>
-                    }
-                  />
-                </div>
-              );
-            })}
-          </SpaceBetween>
+                  <SpaceBetween size="m">
+                    {draft.propertySets.map((pset, idx) => {
+                      const items: PropertyRow[] = Object.entries(
+                        pset.properties,
+                      ).map(([key, value]) => ({
+                        key,
+                        display:
+                          typeof value === 'boolean'
+                            ? value
+                              ? 'true'
+                              : 'false'
+                            : value,
+                      }));
+                      return (
+                        <div key={`${pset.name}-${String(idx)}`}>
+                          <Header
+                            variant="h3"
+                            description={
+                              isDefaultPropertySetName(pset.name)
+                                ? '既定 PropertySet'
+                                : 'カスタム PropertySet'
+                            }
+                          >
+                            {pset.name}
+                          </Header>
+                          <Table
+                            columnDefinitions={propertyTableColumns(pset, idx)}
+                            items={items}
+                            loadingText="読み込み中"
+                            empty={
+                              <Box color="text-body-secondary" padding="s">
+                                プロパティがありません
+                              </Box>
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                  </SpaceBetween>
 
-          <Button onClick={() => setModalVisible(true)}>
-            PropertySet を追加
-          </Button>
-        </SpaceBetween>
+                  <Button onClick={() => setModalVisible(true)}>
+                    PropertySet を追加
+                  </Button>
+                </SpaceBetween>
+              ),
+            },
+            {
+              id: 'schedule',
+              label: '工程',
+              content: <ScheduleTab blockId={draft.id} />,
+            },
+          ]}
+          ariaLabel="属性パネルのタブ"
+        />
       </Container>
 
       <Modal

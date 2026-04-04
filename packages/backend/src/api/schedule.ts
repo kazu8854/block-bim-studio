@@ -6,7 +6,7 @@ import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { ScheduleUsecase } from '../usecases/schedule-usecase.js';
-import { STUB_LEVEL_0 } from './stub.js';
+import { STUB_LEVEL_2_SIMULATION } from './stub.js';
 
 const ProjectIdBodySchema = z.object({
   projectId: z.string().uuid(),
@@ -19,7 +19,10 @@ export function createScheduleApp(scheduleUsecase: ScheduleUsecase) {
     const { projectId } = c.req.valid('json');
     const result = await scheduleUsecase.gantt(projectId);
     if (!result) return c.json({ error: 'Project not found' }, 404);
-    const body = GanttResponseSchema.parse({ ...result, ...STUB_LEVEL_0 });
+    const body = GanttResponseSchema.parse({
+      ...result,
+      ...STUB_LEVEL_2_SIMULATION,
+    });
     return c.json(body);
   });
 
@@ -27,7 +30,10 @@ export function createScheduleApp(scheduleUsecase: ScheduleUsecase) {
     const { projectId } = c.req.valid('json');
     const result = await scheduleUsecase.criticalPath(projectId);
     if (!result) return c.json({ error: 'Project not found' }, 404);
-    const body = CriticalPathResponseSchema.parse({ ...result, ...STUB_LEVEL_0 });
+    const body = CriticalPathResponseSchema.parse({
+      ...result,
+      ...STUB_LEVEL_2_SIMULATION,
+    });
     return c.json(body);
   });
 

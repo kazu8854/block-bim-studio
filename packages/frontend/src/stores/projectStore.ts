@@ -1,10 +1,8 @@
-import type { Block, Project } from '@block-bim-studio/shared';
+import type { Block, Project, ScheduleInfo } from '@block-bim-studio/shared';
+import { buildPropertySetsForNewIfcBlock } from '@block-bim-studio/shared';
 import { create } from 'zustand';
 import type { BlockCatalogEntry } from '@/data/block-catalog';
-import {
-  createDefaultPropertySets,
-  ensureDefaultPropertySets,
-} from '@/utils/default-property-sets';
+import { ensureDefaultPropertySets } from '@/utils/default-property-sets';
 import { useCanvasStore } from './canvasStore';
 
 type ProjectState = {
@@ -16,6 +14,8 @@ type ProjectState = {
   ) => void;
   updateBlock: (block: Block) => void;
   removeBlock: (id: string) => void;
+  upsertSchedule: (schedule: ScheduleInfo) => void;
+  removeScheduleForBlock: (blockId: string) => void;
 };
 
 const zeroVec = (): { x: number; y: number; z: number } => ({
@@ -52,7 +52,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       position: { x: pos.x, y: pos.y, z: pos.z },
       rotation: zeroVec(),
       dimensions: { ...entry.defaultDimensions },
-      propertySets: createDefaultPropertySets(),
+      propertySets: buildPropertySetsForNewIfcBlock(
+        entry.ifcType,
+        entry.defaultDimensions,
+      ),
     });
     const next: Project = {
       ...project,
@@ -86,12 +89,42 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       project: {
         ...project,
         blocks: project.blocks.filter((b) => b.id !== id),
-        schedules: project.schedules.filter((s) => s.blockId !== id),
+        schedules: project.schedules
+          .filter((s) => s.blockId !== id)
+          .map((s) => ({
+            ...s,
+            dependencies: s.dependencies.filter((d) => d.blockId !== id),
+          })),
         updatedAt: new Date().toISOString(),
       },
     });
     if (selectedBlockId === id) {
       useCanvasStore.getState().clearSelection();
     }
+  },
+
+  upsertSchedule: (schedule) => {
+    const { project } = get();
+    if (!project) return;
+    const rest = project.schedules.filter((s) => s.blockId !== schedule.blockId);
+    set({
+      project: {
+        ...project,
+        schedules: [...rest, schedule],
+        updatedAt: new Date().toISOString(),
+      },
+    });
+  },
+
+  removeScheduleForBlock: (blockId) => {
+    const { project } = get();
+    if (!project) return;
+    set({
+      project: {
+        ...project,
+        schedules: project.schedules.filter((s) => s.blockId !== blockId),
+        updatedAt: new Date().toISOString(),
+      },
+    });
   },
 }));

@@ -32,7 +32,9 @@ describe('Agent API contract', () => {
       body: JSON.stringify({ blocks }),
     });
     expect(q.status).toBe(200);
-    QuantitySimulationResponseSchema.parse(await q.json());
+    const qj = await q.json();
+    QuantitySimulationResponseSchema.parse(qj);
+    expect(qj).toMatchObject({ _stub: false, _stubLevel: 2 });
 
     const co = await app.request('/api/agent/cost', {
       method: 'POST',
@@ -40,7 +42,9 @@ describe('Agent API contract', () => {
       body: JSON.stringify({ blocks }),
     });
     expect(co.status).toBe(200);
-    CostSimulationResponseSchema.parse(await co.json());
+    const coj = await co.json();
+    CostSimulationResponseSchema.parse(coj);
+    expect(coj).toMatchObject({ _stub: false, _stubLevel: 2 });
 
     const cl = await app.request('/api/agent/clash', {
       method: 'POST',
@@ -48,7 +52,9 @@ describe('Agent API contract', () => {
       body: JSON.stringify({ blocks }),
     });
     expect(cl.status).toBe(200);
-    ClashSimulationResponseSchema.parse(await cl.json());
+    const clj = await cl.json();
+    ClashSimulationResponseSchema.parse(clj);
+    expect(clj).toMatchObject({ _stub: false, _stubLevel: 2 });
 
     const st = await app.request('/api/agent/structure-check', {
       method: 'POST',

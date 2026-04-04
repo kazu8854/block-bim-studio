@@ -16,7 +16,11 @@ import type { AIUsecase } from '../usecases/ai-usecase.js';
 import type { CheckUsecase } from '../usecases/check-usecase.js';
 import type { ProjectUsecase } from '../usecases/project-usecase.js';
 import type { SimulationUsecase } from '../usecases/simulation-usecase.js';
-import { STUB_LEVEL_0, STUB_LEVEL_2_PROJECT } from './stub.js';
+import {
+  STUB_LEVEL_0,
+  STUB_LEVEL_2_PROJECT,
+  STUB_LEVEL_2_SIMULATION,
+} from './stub.js';
 
 const BlocksBodySchema = z.object({
   blocks: z.array(BlockSchema),
@@ -78,7 +82,10 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(quantityRoute, (c) => {
     const { blocks } = c.req.valid('json');
-    const raw = { ...deps.simulationUsecase.quantityFromBlocks(blocks), ...STUB_LEVEL_0 };
+    const raw = {
+      ...deps.simulationUsecase.quantityFromBlocks(blocks),
+      ...STUB_LEVEL_2_SIMULATION,
+    };
     return c.json(QuantitySimulationResponseSchema.parse(raw), 200);
   });
 
@@ -108,7 +115,10 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(costRoute, (c) => {
     const { blocks } = c.req.valid('json');
-    const raw = { ...deps.simulationUsecase.costFromBlocks(blocks), ...STUB_LEVEL_0 };
+    const raw = {
+      ...deps.simulationUsecase.costFromBlocks(blocks),
+      ...STUB_LEVEL_2_SIMULATION,
+    };
     return c.json(CostSimulationResponseSchema.parse(raw), 200);
   });
 
@@ -138,7 +148,10 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(clashRoute, (c) => {
     const { blocks } = c.req.valid('json');
-    const raw = { ...deps.simulationUsecase.clashFromBlocks(blocks), ...STUB_LEVEL_0 };
+    const raw = {
+      ...deps.simulationUsecase.clashFromBlocks(blocks),
+      ...STUB_LEVEL_2_SIMULATION,
+    };
     return c.json(ClashSimulationResponseSchema.parse(raw), 200);
   });
 
@@ -156,7 +169,7 @@ export function createAgentApp(deps: AgentAppDeps) {
     },
     responses: {
       200: {
-        description: 'Structure check (stub)',
+        description: 'Structure check (Level 2)',
         content: {
           'application/json': {
             schema: StructureCheckResponseSchema,
@@ -168,7 +181,10 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(structureRoute, (c) => {
     const { blocks } = c.req.valid('json');
-    const raw = { ...deps.checkUsecase.structureFromBlocks(blocks), ...STUB_LEVEL_0 };
+    const raw = {
+      ...deps.checkUsecase.structureFromBlocks(blocks),
+      ...STUB_LEVEL_2_SIMULATION,
+    };
     return c.json(StructureCheckResponseSchema.parse(raw), 200);
   });
 
@@ -186,7 +202,7 @@ export function createAgentApp(deps: AgentAppDeps) {
     },
     responses: {
       200: {
-        description: 'Regulation check (stub)',
+        description: 'Regulation check (Level 2)',
         content: {
           'application/json': {
             schema: RegulationCheckResponseSchema,
@@ -200,7 +216,7 @@ export function createAgentApp(deps: AgentAppDeps) {
     const { blocks, metadata } = c.req.valid('json');
     const raw = {
       ...deps.checkUsecase.regulationFromBlocks(blocks, metadata ?? {}),
-      ...STUB_LEVEL_0,
+      ...STUB_LEVEL_2_SIMULATION,
     };
     return c.json(RegulationCheckResponseSchema.parse(raw), 200);
   });

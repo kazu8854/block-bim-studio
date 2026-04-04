@@ -1,0 +1,40 @@
+/**
+ * web-ifc で開ける最小 IFC4 ベース（Owner / Project / Site / Building / Storey / 単位）
+ * ブロックはシリアライザがこの上に追記する。
+ */
+export const IFC4_COORDINATION_BASE_STEP = `ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('ViewDefinition [CoordinationView]'),'2;1');
+FILE_NAME('export.ifc','2024-01-01T00:00:00',('Block BIM Studio'),('Block BIM Studio'),'Block BIM Studio','Block BIM Studio',$);
+FILE_SCHEMA(('IFC4'));
+ENDSEC;
+DATA;
+#1=IFCPERSON($,$,$,$,$,$,$,$);
+#2=IFCORGANIZATION($,'Block BIM Studio',$,$,$);
+#3=IFCPERSONANDORGANIZATION(#1,#2,$);
+#4=IFCAPPLICATION(#2,'1.0','Block BIM Studio','');
+#5=IFCOWNERHISTORY(#3,#4,$,.NOCHANGE.,$,$,$,1690000000);
+#6=IFCCARTESIANPOINT((0.,0.,0.));
+#7=IFCAXIS2PLACEMENT3D(#6,$,$);
+#8=IFCLOCALPLACEMENT($,#7);
+#9=IFCDIRECTION((0.,0.,1.));
+#10=IFCDIRECTION((1.,0.,0.));
+#11=IFCAXIS2PLACEMENT3D(#6,#9,#10);
+#12=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-05,#11,$);
+#13=IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Body','Model',*,*,*,*,#12,$,.MODEL_VIEW.,$);
+#14=IFCSIUNIT(*,.LENGTHUNIT.,$,.METRE.);
+#15=IFCSIUNIT(*,.PLANEANGLEUNIT.,$,.RADIAN.);
+#16=IFCUNITASSIGNMENT((#14,#15));
+#17=IFCPROJECT('0w8P2kZ9rFyvXyjLRJ3YK',#5,'Project',$,$,$,$,(#12),#16);
+#18=IFCLOCALPLACEMENT($,#7);
+#19=IFCSITE('1w8P2kZ9rFyvXyjLRJ3YL',#5,'Site',$,$,#18,$,$,.ELEMENT.,$,$,$,$,$);
+#20=IFCLOCALPLACEMENT(#18,#7);
+#21=IFCBUILDING('2w8P2kZ9rFyvXyjLRJ3YM',#5,'Building',$,$,#20,$,$,.ELEMENT.,$,$,$);
+#22=IFCLOCALPLACEMENT(#20,#7);
+#23=IFCBUILDINGSTOREY('3w8P2kZ9rFyvXyjLRJ3YN',#5,'Default Storey',$,$,#22,$,$,.ELEMENT.,0.);
+#24=IFCRELAGGREGATES('4w8P2kZ9rFyvXyjLRJ3YO',#5,$,$,$,#17,(#19));
+#25=IFCRELAGGREGATES('5w8P2kZ9rFyvXyjLRJ3YP',#5,$,$,$,#19,(#21));
+#26=IFCRELAGGREGATES('6w8P2kZ9rFyvXyjLRJ3YQ',#5,$,$,$,#21,(#23));
+ENDSEC;
+END-ISO-10303-21;
+`;

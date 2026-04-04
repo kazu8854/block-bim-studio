@@ -1,4 +1,4 @@
-import { parseIfcLevel0, serializeProjectToIfcLevel0 } from '@block-bim-studio/shared';
+import { parseIfc, serializeProjectToIfcLevel0 } from '@block-bim-studio/shared/ifc';
 import type { DbPort } from '../adapters/db-port.js';
 
 export class IfcUsecase {
@@ -18,6 +18,6 @@ export class IfcUsecase {
 
   async importIfc(ifcBase64: string) {
     const buffer = Buffer.from(ifcBase64, 'base64');
-    return parseIfcLevel0(new Uint8Array(buffer));
+    return parseIfc(new Uint8Array(buffer));
   }
 }

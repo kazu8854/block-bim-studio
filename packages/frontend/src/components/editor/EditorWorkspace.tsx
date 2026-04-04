@@ -5,6 +5,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Table from '@cloudscape-design/components/table';
 import { Canvas3D } from '@/components/canvas/Canvas3D';
 import { BlockPalette } from '@/components/palette/BlockPalette';
+import { IfcToolbar } from '@/components/editor/IfcToolbar';
 import { PropertyPanel } from '@/components/properties/PropertyPanel';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useProjectStore } from '@/stores/projectStore';
@@ -31,6 +32,7 @@ export function EditorWorkspace() {
           ドラッグでオービット、G / R で移動・回転ハンドル。パレットからブロックを
           キャンバスへドラッグ＆ドロップできます。Delete で選択ブロックを削除。
         </Box>
+        {project ? <IfcToolbar project={project} /> : null}
         <Canvas3D />
         <Header variant="h3">配置ブロック一覧</Header>
         <Table

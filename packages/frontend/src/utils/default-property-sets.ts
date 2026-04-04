@@ -1,5 +1,6 @@
 import type { Block, PropertySet } from '@block-bim-studio/shared';
 
+/** レガシー／欠損補完用。新規配置は `buildPropertySetsForNewIfcBlock`（shared）を使う。 */
 const DEFAULT_SET_NAMES = new Set([
   'Pset_Common',
   'Qto_BaseQuantities',

@@ -15,3 +15,7 @@ export const StubLevel2ProjectSchema = z.object({
 });
 
 export type StubLevel2Project = z.infer<typeof StubLevel2ProjectSchema>;
+
+/** シミュレーション API（グループ B）— メタ形状は Level 2 プロジェクト API と同一 */
+export const StubLevel2SimulationSchema = StubLevel2ProjectSchema;
+export type StubLevel2Simulation = z.infer<typeof StubLevel2SimulationSchema>;

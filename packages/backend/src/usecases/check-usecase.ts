@@ -1,9 +1,9 @@
 import type { Block, ProjectMetadata } from '@block-bim-studio/shared';
 import {
-  environmentSimulateLevel0,
-  regulationCheckLevel0,
-  safetyAnalyzeLevel0,
-  structureCheckLevel0,
+  environmentSimulateFromBlocks,
+  regulationCheckFromBlocks,
+  safetyAnalyzeFromBlocks,
+  structureCheckFromBlocks,
 } from '@block-bim-studio/shared';
 import type { DbPort } from '../adapters/db-port.js';
 
@@ -17,32 +17,32 @@ export class CheckUsecase {
   async structure(projectId: string) {
     const p = await this.loadProject(projectId);
     if (!p) return null;
-    return structureCheckLevel0(p.blocks);
+    return structureCheckFromBlocks(p.blocks);
   }
 
   async regulation(projectId: string) {
     const p = await this.loadProject(projectId);
     if (!p) return null;
-    return regulationCheckLevel0(p.blocks, p.metadata);
+    return regulationCheckFromBlocks(p.blocks, p.metadata);
   }
 
   async environment(projectId: string) {
     const p = await this.loadProject(projectId);
     if (!p) return null;
-    return environmentSimulateLevel0(p.blocks);
+    return environmentSimulateFromBlocks(p.blocks);
   }
 
   async safety(projectId: string) {
     const p = await this.loadProject(projectId);
     if (!p) return null;
-    return safetyAnalyzeLevel0(p.blocks, p.schedules);
+    return safetyAnalyzeFromBlocks(p.blocks, p.schedules);
   }
 
   structureFromBlocks(blocks: Block[]) {
-    return structureCheckLevel0(blocks);
+    return structureCheckFromBlocks(blocks);
   }
 
   regulationFromBlocks(blocks: Block[], metadata: ProjectMetadata) {
-    return regulationCheckLevel0(blocks, metadata);
+    return regulationCheckFromBlocks(blocks, metadata);
   }
 }

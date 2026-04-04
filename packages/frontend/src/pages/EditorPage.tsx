@@ -8,6 +8,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getProject, updateProject } from '@/api/projects';
 import { EditorWorkspace } from '@/components/editor/EditorWorkspace';
+import { CheckPanel } from '@/components/check/CheckPanel';
+import { SchedulePanel } from '@/components/schedule/SchedulePanel';
+import { SimulationPanel } from '@/components/simulation/SimulationPanel';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useProjectStore } from '@/stores/projectStore';
 
@@ -67,13 +70,16 @@ export function EditorPage() {
         <BreadcrumbGroup
           items={[
             { text: 'プロジェクト一覧', href: '/' },
-            { text: 'ダッシュボード', href: '/dashboard' },
+            {
+              text: 'ダッシュボード',
+              href: projectId ? `/dashboard/${projectId}` : '/dashboard',
+            },
             { text: project?.name ?? 'エディタ', href: '#' },
           ]}
           onFollow={(ev) => {
             ev.preventDefault();
             if (ev.detail.href === '/') navigate('/');
-            if (ev.detail.href === '/dashboard') navigate('/dashboard');
+            if (ev.detail.href.startsWith('/dashboard')) navigate(ev.detail.href);
           }}
         />
         {loadError ? (
@@ -92,7 +98,13 @@ export function EditorPage() {
           variant="h1"
           actions={
             <SpaceBetween direction="horizontal" size="xs">
-              <Button onClick={() => navigate('/dashboard')}>ダッシュボード</Button>
+              <Button
+                onClick={() =>
+                  projectId ? navigate(`/dashboard/${projectId}`) : navigate('/dashboard')
+                }
+              >
+                ダッシュボード
+              </Button>
               <Button onClick={() => navigate('/')}>一覧へ</Button>
               <Button
                 variant="primary"
@@ -108,6 +120,9 @@ export function EditorPage() {
         </Header>
 
         {project ? <EditorWorkspace /> : null}
+        {project ? <CheckPanel projectId={project.id} /> : null}
+        {project ? <SchedulePanel projectId={project.id} /> : null}
+        {project ? <SimulationPanel projectId={project.id} /> : null}
       </SpaceBetween>
     </Box>
   );

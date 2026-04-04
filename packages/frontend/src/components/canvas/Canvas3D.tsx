@@ -11,6 +11,8 @@ import { useProjectStore } from '@/stores/projectStore';
 import { clientPointToFloor } from '@/utils/canvas-raycast';
 import { Block3D } from './Block3D';
 import { SelectionHandler } from './SelectionHandler';
+import { CheckSafetyOverlay } from './CheckSafetyOverlay';
+import { SimulationOverlay } from './SimulationOverlay';
 import { SnapGuide } from './SnapGuide';
 
 function ViewportRegistrar() {
@@ -100,6 +102,8 @@ function SceneContent() {
       ))}
       <SelectionHandler />
       <SnapGuide />
+      <SimulationOverlay />
+      <CheckSafetyOverlay />
       <CameraControls />
     </>
   );

@@ -1,8 +1,8 @@
 import type { Block } from '@block-bim-studio/shared';
 import {
-  calculateCostLevel0,
-  calculateQuantityLevel0,
-  detectClashesLevel0,
+  calculateCostFromBlocks,
+  calculateQuantityFromBlocks,
+  detectClashesFromBlocks,
 } from '@block-bim-studio/shared';
 import type { DbPort } from '../adapters/db-port.js';
 
@@ -17,30 +17,30 @@ export class SimulationUsecase {
   async quantity(projectId: string) {
     const blocks = await this.loadBlocks(projectId);
     if (!blocks) return null;
-    return calculateQuantityLevel0(blocks);
+    return calculateQuantityFromBlocks(blocks);
   }
 
   async cost(projectId: string) {
     const blocks = await this.loadBlocks(projectId);
     if (!blocks) return null;
-    return calculateCostLevel0(blocks);
+    return calculateCostFromBlocks(blocks);
   }
 
   async clash(projectId: string) {
     const blocks = await this.loadBlocks(projectId);
     if (!blocks) return null;
-    return detectClashesLevel0(blocks);
+    return detectClashesFromBlocks(blocks);
   }
 
   quantityFromBlocks(blocks: Block[]) {
-    return calculateQuantityLevel0(blocks);
+    return calculateQuantityFromBlocks(blocks);
   }
 
   costFromBlocks(blocks: Block[]) {
-    return calculateCostLevel0(blocks);
+    return calculateCostFromBlocks(blocks);
   }
 
   clashFromBlocks(blocks: Block[]) {
-    return detectClashesLevel0(blocks);
+    return detectClashesFromBlocks(blocks);
   }
 }

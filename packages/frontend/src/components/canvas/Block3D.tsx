@@ -3,6 +3,7 @@ import type { ThreeEvent } from '@react-three/fiber';
 import { useLayoutEffect, useRef } from 'react';
 import type { Group } from 'three';
 import { useCanvasStore } from '@/stores/canvasStore';
+import { useCheckStore } from '@/stores/checkStore';
 
 const COLORS: Record<IfcElementType, string> = {
   IfcWall: '#795548',
@@ -25,6 +26,10 @@ export function Block3D({ block, selected }: Block3DProps) {
   const setBlockRef = useCanvasStore((s) => s.setBlockRef);
   const selectBlock = useCanvasStore((s) => s.selectBlock);
   const draggingBlockId = useCanvasStore((s) => s.transformDraggingBlockId);
+  const structureViolation = useCheckStore(
+    (s) =>
+      s.structure?.violations.some((v) => v.blockId === block.id) ?? false,
+  );
 
   useLayoutEffect(() => {
     const id = block.id;
@@ -64,6 +69,17 @@ export function Block3D({ block, selected }: Block3DProps) {
         <boxGeometry args={[width, height, depth]} />
         <meshStandardMaterial color={color} metalness={0.12} roughness={0.65} />
       </mesh>
+      {structureViolation ? (
+        <mesh raycast={() => null}>
+          <boxGeometry args={[width + 0.12, height + 0.12, depth + 0.12]} />
+          <meshBasicMaterial
+            color="#ff9800"
+            transparent
+            opacity={0.38}
+            depthWrite={false}
+          />
+        </mesh>
+      ) : null}
       {selected ? (
         <mesh raycast={() => null}>
           <boxGeometry args={[width + 0.04, height + 0.04, depth + 0.04]} />

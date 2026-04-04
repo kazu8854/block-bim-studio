@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./ifc": {
+      "types": "./dist/ifc/index.d.ts",
+      "import": "./dist/ifc/index.js"
     }
   },
   "scripts": {
@@ -16,6 +20,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "web-ifc": "^0.0.72",
     "zod": "^3.24.0"
   },
   "devDependencies": {

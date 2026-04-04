@@ -1,5 +1,9 @@
 import type { BlockCategory, IfcElementType } from '@block-bim-studio/shared';
 
+/**
+ * 標準ブロックカタログ。Pset_Common / Qto / Pset_Cost の既定値は
+ * `IFC_TYPE_DEFAULT_COMMON_AND_COST`（shared）と `buildPropertySetsForNewIfcBlock` で ifcType ごとに付与される。
+ */
 export type BlockCatalogEntry = {
   id: string;
   name: string;

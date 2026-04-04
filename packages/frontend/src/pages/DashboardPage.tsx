@@ -5,10 +5,13 @@ import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Table from '@cloudscape-design/components/table';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { getDashboardData } from '@/api/dashboard';
 import { listProjects } from '@/api/projects';
+import { Dashboard } from '@/components/dashboard/Dashboard';
+import type { DashboardData } from '@block-bim-studio/shared';
 
-export function DashboardPage() {
+function DashboardHub() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,40 +37,32 @@ export function DashboardPage() {
     <Box padding={{ horizontal: 'l', vertical: 'l' }}>
       <SpaceBetween size="l">
         <BreadcrumbGroup items={[{ text: 'ダッシュボード', href: '#' }]} />
-        <Header variant="h1" description="直近のプロジェクトへ移動できます。">
+        <Header variant="h1" description="プロジェクトを選ぶと材料・コスト・進捗のグラフを表示します。">
           ダッシュボード
         </Header>
-        {error ? (
-          <Box color="text-status-error">{error}</Box>
-        ) : null}
+        {error ? <Box color="text-status-error">{error}</Box> : null}
         <SpaceBetween direction="horizontal" size="xs">
           <Button onClick={() => void load()} disabled={loading}>
             再読み込み
           </Button>
-          <Button variant="primary" onClick={() => navigate('/')}>
-            プロジェクト一覧へ
-          </Button>
+          <Button onClick={() => navigate('/compare')}>プロジェクト比較へ</Button>
         </SpaceBetween>
-        <Header variant="h2">プロジェクト概要</Header>
+        <Header variant="h2">プロジェクトを選択</Header>
         <Table
           trackBy="id"
           loading={loading}
-          loadingText="読み込み中"
           columnDefinitions={[
             { id: 'name', header: '名前', cell: (p) => p.name },
-            { id: 'status', header: 'ステータス', cell: (p) => p.status },
             { id: 'blocks', header: 'ブロック数', cell: (p) => p.blockCount },
             {
-              id: 'updated',
-              header: '更新日時',
-              cell: (p) => new Date(p.updatedAt).toLocaleString('ja-JP'),
+              id: 'dash',
+              header: '分析',
+              cell: (p) => <Link to={`/dashboard/${p.id}`}>開く</Link>,
             },
             {
-              id: 'open',
+              id: 'editor',
               header: '',
-              cell: (p) => (
-                <Link to={`/editor/${p.id}`}>エディタを開く</Link>
-              ),
+              cell: (p) => <Link to={`/editor/${p.id}`}>エディタ</Link>,
             },
           ]}
           items={rows}
@@ -81,4 +76,70 @@ export function DashboardPage() {
       </SpaceBetween>
     </Box>
   );
+}
+
+function ProjectDashboard({ projectId }: { projectId: string }) {
+  const navigate = useNavigate();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      setData(await getDashboardData(projectId));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '読み込みに失敗しました');
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  return (
+    <Box padding={{ horizontal: 'l', vertical: 'l' }}>
+      <SpaceBetween size="l">
+        <BreadcrumbGroup
+          items={[
+            { text: 'ダッシュボード', href: '/dashboard' },
+            { text: 'プロジェクト分析', href: '#' },
+          ]}
+          onFollow={(ev) => {
+            ev.preventDefault();
+            if (ev.detail.href === '/dashboard') navigate('/dashboard');
+          }}
+        />
+        <Header
+          variant="h1"
+          actions={
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button onClick={() => navigate(`/editor/${projectId}`)}>
+                エディタへ
+              </Button>
+              <Button onClick={() => navigate('/dashboard')}>一覧へ</Button>
+            </SpaceBetween>
+          }
+        >
+          プロジェクト分析
+        </Header>
+        {error ? <Box color="text-status-error">{error}</Box> : null}
+        {loading || !data ? (
+          <Box color="text-body-secondary">読み込み中…</Box>
+        ) : (
+          <Dashboard data={data} onRefresh={() => void load()} />
+        )}
+      </SpaceBetween>
+    </Box>
+  );
+}
+
+export function DashboardPage() {
+  const { projectId } = useParams<{ projectId: string }>();
+  if (projectId) return <ProjectDashboard projectId={projectId} />;
+  return <DashboardHub />;
 }

@@ -14,7 +14,11 @@ import {
 import { IfcExportResultSchema } from '../models/ifc-workflow.js';
 import { IfcImportResultSchema } from '../models/ifc-import.js';
 import { ProjectSchema, ProjectSummarySchema } from '../models/project.js';
-import { StubLevel0Schema, StubLevel2ProjectSchema } from '../models/stub-meta.js';
+import {
+  StubLevel0Schema,
+  StubLevel2ProjectSchema,
+  StubLevel2SimulationSchema,
+} from '../models/stub-meta.js';
 import {
   ClashResultSchema,
   CostResultSchema,
@@ -27,6 +31,7 @@ import { UserSchema } from '../models/user.js';
 
 const S0 = StubLevel0Schema;
 const S2proj = StubLevel2ProjectSchema;
+const S2sim = StubLevel2SimulationSchema;
 
 export const UserDetailResponseSchema = UserSchema.merge(S0);
 
@@ -49,28 +54,28 @@ export const DuplicateProjectResponseSchema = ProjectSchema.merge(S2proj);
 export const AgentProjectDetailResponseSchema = ProjectSchema.merge(S2proj);
 
 export const QuantitySimulationResponseSchema =
-  QuantityResultSchema.merge(S0);
+  QuantityResultSchema.merge(S2sim);
 
-export const CostSimulationResponseSchema = CostResultSchema.merge(S0);
+export const CostSimulationResponseSchema = CostResultSchema.merge(S2sim);
 
-export const ClashSimulationResponseSchema = ClashResultSchema.merge(S0);
+export const ClashSimulationResponseSchema = ClashResultSchema.merge(S2sim);
 
-export const GanttResponseSchema = GanttChartDataSchema.merge(S0);
+export const GanttResponseSchema = GanttChartDataSchema.merge(S2sim);
 
 export const CriticalPathResponseSchema =
-  CriticalPathResultSchema.merge(S0);
+  CriticalPathResultSchema.merge(S2sim);
 
 export const StructureCheckResponseSchema =
-  StructureCheckResultSchema.merge(S0);
+  StructureCheckResultSchema.merge(S2sim);
 
 export const RegulationCheckResponseSchema =
-  RegulationCheckResultSchema.merge(S0);
+  RegulationCheckResultSchema.merge(S2sim);
 
 export const EnvironmentCheckResponseSchema =
-  EnvironmentSimulationResultSchema.merge(S0);
+  EnvironmentSimulationResultSchema.merge(S2sim);
 
 export const SafetyCheckResponseSchema =
-  SafetySimulationResultSchema.merge(S0);
+  SafetySimulationResultSchema.merge(S2sim);
 
 export const AiSuggestStructureResponseSchema = z
   .object({
@@ -84,13 +89,13 @@ export const AiGenerateFromTextResponseSchema =
 export const AiGenerateFromImageResponseSchema =
   ImageAnalysisResultSchema.merge(S0);
 
-export const IfcExportResponseSchema = IfcExportResultSchema.merge(S0);
+export const IfcExportResponseSchema = IfcExportResultSchema.merge(S2sim);
 
-export const IfcImportResponseSchema = IfcImportResultSchema.merge(S0);
+export const IfcImportResponseSchema = IfcImportResultSchema.merge(S2sim);
 
-export const DashboardResponseSchema = DashboardDataSchema.merge(S0);
+export const DashboardResponseSchema = DashboardDataSchema.merge(S2sim);
 
-export const CompareResponseSchema = ProjectCompareResultSchema.merge(S0);
+export const CompareResponseSchema = ProjectCompareResultSchema.merge(S2sim);
 
 /** Agent API: プロジェクト一覧（Level 2） */
 export const AgentProjectListResponseSchema = z

@@ -9,6 +9,7 @@ export const CompareMetricDeltaSchema = z.object({
 export const ProjectCompareResultSchema = z.object({
   projects: z.array(ProjectSummarySchema),
   deltas: z.array(CompareMetricDeltaSchema),
+  message: z.string().optional(),
 });
 
 export type CompareMetricDelta = z.infer<typeof CompareMetricDeltaSchema>;

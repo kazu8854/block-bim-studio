@@ -15,9 +15,12 @@
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "hono": "^4.6.0",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^4.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
+    "recharts": "^3.8.1",
     "three": "^0.169.0",
     "zustand": "^5.0.3"
   },

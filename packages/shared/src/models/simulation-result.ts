@@ -60,6 +60,7 @@ export const CriticalPathResultSchema = z.object({
       floatDays: z.number().int().nonnegative(),
     }),
   ),
+  message: z.string().optional(),
 });
 
 export const StructureCheckResultSchema = z.object({
@@ -73,6 +74,8 @@ export const StructureCheckResultSchema = z.object({
     }),
   ),
   passed: z.boolean(),
+  /** 全合格時やガイダンス用 */
+  message: z.string().optional(),
 });
 
 export const RegulationCheckResultSchema = z.object({
@@ -87,6 +90,7 @@ export const RegulationCheckResultSchema = z.object({
     }),
   ),
   allCompliant: z.boolean(),
+  message: z.string().optional(),
 });
 
 export type QuantityResult = z.infer<typeof QuantityResultSchema>;

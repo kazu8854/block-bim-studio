@@ -36,6 +36,7 @@ export function AppLayout() {
         <SpaceBetween direction="horizontal" size="l">
           <NavLink to="/">プロジェクト一覧</NavLink>
           <NavLink to="/dashboard">ダッシュボード</NavLink>
+          <NavLink to="/compare">プロジェクト比較</NavLink>
         </SpaceBetween>
       </Box>
       <Outlet />
