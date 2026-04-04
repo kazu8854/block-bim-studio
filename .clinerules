@@ -1,0 +1,15 @@
+# Cline Rules: Block BIM Studio
+
+本プロジェクトの全ルールは `AI_INSTRUCTIONS.md` に記載されています。必ず参照してください。
+
+## Spec ドキュメント
+
+- 要件: `.kiro/specs/ifc-lego-bim-simulator/requirements.md`
+- 設計: `.kiro/specs/ifc-lego-bim-simulator/design.md`
+- タスク: `.kiro/specs/ifc-lego-bim-simulator/tasks*.md`
+
+## 開発時の注意
+
+- `packages/shared` の型定義を変更する場合は、影響範囲を確認してください
+- API レスポンスには `_stub` フラグを含めてください
+- テストは API 契約テスト（Zod スキーマ準拠）を最優先で書いてください

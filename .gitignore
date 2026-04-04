@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+cdk.out/
+
+# Coverage
+coverage/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary
+tmp/
+temp/
