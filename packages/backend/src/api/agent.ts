@@ -1,10 +1,10 @@
 import {
+  AgentProjectDetailResponseSchema,
   AgentProjectListResponseSchema,
   AiGenerateFromTextResponseSchema,
   BlockSchema,
   ClashSimulationResponseSchema,
   CostSimulationResponseSchema,
-  ProjectDetailResponseSchema,
   ProjectMetadataSchema,
   QuantitySimulationResponseSchema,
   RegulationCheckResponseSchema,
@@ -280,7 +280,7 @@ export function createAgentApp(deps: AgentAppDeps) {
         description: 'Project detail (stub)',
         content: {
           'application/json': {
-            schema: ProjectDetailResponseSchema,
+            schema: AgentProjectDetailResponseSchema,
           },
         },
       },
@@ -297,7 +297,7 @@ export function createAgentApp(deps: AgentAppDeps) {
       return c.json({ error: 'Project not found' }, 404);
     }
     const raw = { ...project, ...STUB_LEVEL_0 };
-    return c.json(ProjectDetailResponseSchema.parse(raw), 200);
+    return c.json(AgentProjectDetailResponseSchema.parse(raw), 200);
   });
 
   const projectsListRoute = createRoute({

@@ -58,3 +58,6 @@ export function createApp(deps: AppDeps) {
 
   return app;
 }
+
+/** Hono RPC クライアント用（`hono/client` のジェネリクス） */
+export type BlockBimApp = ReturnType<typeof createApp>;

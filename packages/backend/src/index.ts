@@ -1,4 +1,4 @@
-export { createApp, type AppDeps } from './app.js';
+export { createApp, type AppDeps, type BlockBimApp } from './app.js';
 export { createAIAdapter } from './adapters/ai-adapter-factory.js';
 export { MockAIAdapter } from './adapters/mock-ai-adapter.js';
 export { MockDbAdapter } from './adapters/mock-db-adapter.js';

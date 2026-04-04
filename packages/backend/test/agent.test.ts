@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AgentProjectDetailResponseSchema,
   AgentProjectListResponseSchema,
   AiGenerateFromTextResponseSchema,
   ClashSimulationResponseSchema,
   CostSimulationResponseSchema,
-  ProjectDetailResponseSchema,
   QuantitySimulationResponseSchema,
   RegulationCheckResponseSchema,
   StructureCheckResponseSchema,
@@ -97,7 +97,7 @@ describe('Agent API contract', () => {
 
     const one = await app.request(`/api/agent/project/${p.id}`);
     expect(one.status).toBe(200);
-    ProjectDetailResponseSchema.parse(await one.json());
+    AgentProjectDetailResponseSchema.parse(await one.json());
 
     const list = await app.request('/api/agent/projects');
     expect(list.status).toBe(200);

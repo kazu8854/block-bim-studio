@@ -38,4 +38,9 @@ export class ProjectUsecase {
     if (!p) return null;
     return this.db.updateProject({ ...p, status, updatedAt: new Date().toISOString() });
   }
+
+  /** アーカイブ等、ステータス変更（A1 要件の archiveProject） */
+  async archiveProject(id: string, status: ProjectStatus): Promise<Project | null> {
+    return this.setStatus(id, status);
+  }
 }

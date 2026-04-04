@@ -26,8 +26,33 @@ function newProject(name: string, metadata: ProjectMetadata = {}): Project {
   };
 }
 
-function cloneBlockIds(blocks: Project['blocks']): Project['blocks'] {
-  return blocks.map((b) => ({ ...b, id: crypto.randomUUID() }));
+/** 複製時: ブロック ID を振り直し、schedules / dependencies の blockId を対応付ける */
+function remapProjectForDuplicate(src: Project): Project {
+  const blockIdMap = new Map<string, string>();
+  const blocks = src.blocks.map((b) => {
+    const nid = crypto.randomUUID();
+    blockIdMap.set(b.id, nid);
+    return { ...b, id: nid };
+  });
+  const mapId = (blockId: string) => blockIdMap.get(blockId) ?? blockId;
+  const schedules = src.schedules.map((s) => ({
+    ...s,
+    blockId: mapId(s.blockId),
+    dependencies: s.dependencies.map((d) => ({
+      ...d,
+      blockId: mapId(d.blockId),
+    })),
+  }));
+  const now = new Date().toISOString();
+  return {
+    ...src,
+    id: crypto.randomUUID(),
+    name: `${src.name} (copy)`,
+    blocks,
+    schedules,
+    createdAt: now,
+    updatedAt: now,
+  };
 }
 
 export class MockDbAdapter implements DbPort {
@@ -61,6 +86,9 @@ export class MockDbAdapter implements DbPort {
   }
 
   async updateProject(project: Project): Promise<Project> {
+    if (!this.projects.has(project.id)) {
+      throw new Error('PROJECT_NOT_FOUND');
+    }
     const next: Project = { ...project, updatedAt: new Date().toISOString() };
     this.projects.set(next.id, next);
     return next;
@@ -71,7 +99,9 @@ export class MockDbAdapter implements DbPort {
   }
 
   async listProjects(): Promise<ProjectSummary[]> {
-    return [...this.projects.values()].map(toSummary);
+    return [...this.projects.values()]
+      .map(toSummary)
+      .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : 0));
   }
 
   async duplicateProject(id: string): Promise<Project> {
@@ -79,15 +109,7 @@ export class MockDbAdapter implements DbPort {
     if (!src) {
       throw new Error('PROJECT_NOT_FOUND');
     }
-    const now = new Date().toISOString();
-    const copy: Project = {
-      ...src,
-      id: crypto.randomUUID(),
-      name: `${src.name} (copy)`,
-      blocks: cloneBlockIds(src.blocks),
-      createdAt: now,
-      updatedAt: now,
-    };
+    const copy = remapProjectForDuplicate(src);
     this.projects.set(copy.id, copy);
     return copy;
   }

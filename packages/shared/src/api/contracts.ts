@@ -14,7 +14,7 @@ import {
 import { IfcExportResultSchema } from '../models/ifc-workflow.js';
 import { IfcImportResultSchema } from '../models/ifc-import.js';
 import { ProjectSchema, ProjectSummarySchema } from '../models/project.js';
-import { StubLevel0Schema } from '../models/stub-meta.js';
+import { StubLevel0Schema, StubLevel2ProjectSchema } from '../models/stub-meta.js';
 import {
   ClashResultSchema,
   CostResultSchema,
@@ -26,22 +26,27 @@ import {
 import { UserSchema } from '../models/user.js';
 
 const S0 = StubLevel0Schema;
+const S2proj = StubLevel2ProjectSchema;
 
 export const UserDetailResponseSchema = UserSchema.merge(S0);
 
+/** REST `/api/projects/*` — Level 2（本実装） */
 export const ProjectListResponseSchema = z
   .object({
     items: z.array(ProjectSummarySchema),
   })
-  .merge(S0);
+  .merge(S2proj);
 
-export const ProjectDetailResponseSchema = ProjectSchema.merge(S0);
+export const ProjectDetailResponseSchema = ProjectSchema.merge(S2proj);
 
-export const CreateProjectResponseSchema = ProjectSchema.merge(S0);
+export const CreateProjectResponseSchema = ProjectSchema.merge(S2proj);
 
-export const ArchiveProjectResponseSchema = ProjectSchema.merge(S0);
+export const ArchiveProjectResponseSchema = ProjectSchema.merge(S2proj);
 
-export const DuplicateProjectResponseSchema = ProjectSchema.merge(S0);
+export const DuplicateProjectResponseSchema = ProjectSchema.merge(S2proj);
+
+/** Agent `GET /project/:id` — スタブのまま */
+export const AgentProjectDetailResponseSchema = ProjectSchema.merge(S0);
 
 export const QuantitySimulationResponseSchema =
   QuantityResultSchema.merge(S0);

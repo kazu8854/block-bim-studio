@@ -3,9 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev:mock": "tsx watch src/dev.ts"
   },
   "dependencies": {
     "@block-bim-studio/shared": "*",
@@ -15,7 +24,9 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@hono/node-server": "^1.19.12",
     "@types/node": "^22.10.0",
+    "tsx": "^4.21.0",
     "typescript": "~5.7.0",
     "vitest": "^3.0.0"
   }

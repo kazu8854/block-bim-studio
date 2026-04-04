@@ -28,4 +28,16 @@ describe('MockDbAdapter CRUD flow', () => {
     expect(b.id).not.toBe(a.id);
     expect(b.name).toContain('copy');
   });
+
+  it('updateProject throws when id missing', async () => {
+    const db = new MockDbAdapter();
+    const ghost = await db.createProject({ name: 'X' });
+    await db.deleteProject(ghost.id);
+    await expect(
+      db.updateProject({
+        ...ghost,
+        name: 'Y',
+      }),
+    ).rejects.toThrow('PROJECT_NOT_FOUND');
+  });
 });

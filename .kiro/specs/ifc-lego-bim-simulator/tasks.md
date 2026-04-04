@@ -133,7 +133,7 @@
     - `packages/backend/test/adapters/mock-db-adapter.test.ts` を作成
     - _要件: 13.1, 24.3, 24.4_
 
-- [ ] 5. Phase 0 チェックポイント
+- [x] 5. Phase 0 チェックポイント
   - `npm run build` が全パッケージで通ること、`npm run test` が全パッケージで通ること、`npm run dev:mock` で全エンドポイントがスタブレスポンスを返すことを確認
   - 問題があればユーザーに確認
 
