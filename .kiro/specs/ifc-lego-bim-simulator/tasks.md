@@ -12,10 +12,10 @@
 | フェーズ | 内容 | タスクファイル |
 |----------|------|--------------|
 | Phase 0 | インターフェース定義 + スタブ実装 | 本ファイル |
-| Phase 1 | グループ A（コア機能）+ 3D エンジン基礎 | tasks-group-a.md |
-| Phase 2 | グループ B（BIM シミュレーション）+ グループ C（工程管理） | tasks-group-b.md, tasks-group-c.md |
+| Phase 1 | グループ A（コア機能）+ 3D エンジン基礎 | tasks/group-a.md |
+| Phase 2 | グループ B（BIM シミュレーション）+ グループ C（工程管理） | tasks/group-b.md, tasks/group-c.md |
 | Phase 3 | ブラッシュアップ + 品質向上 | 本ファイル（Phase 3 セクション） |
-| Phase 4 | グループ D（AI）+ グループ E（建設チェック）+ グループ F（データ連携） | tasks-group-d.md, tasks-group-e.md, tasks-group-f.md |
+| Phase 4 | グループ D（AI）+ グループ E（建設チェック）+ グループ F（データ連携） | tasks/group-d.md, tasks/group-e.md, tasks/group-f.md |
 
 ## タスク
 
@@ -138,7 +138,7 @@
   - 問題があればユーザーに確認
 
 - [ ] 6. Phase 1: グループ A（コア機能）+ 3D エンジン基礎
-  - 詳細は `tasks-group-a.md` を参照
+  - 詳細は `tasks/group-a.md` を参照
   - ブロックパレット、3D キャンバス、属性パネル、プロジェクト CRUD、JSON シリアライズ、プロジェクト一覧
   - _要件: 1, 2, 3, 13, 14, 24_
 
@@ -147,12 +147,12 @@
   - 問題があればユーザーに確認
 
 - [ ] 8. Phase 2: グループ B（BIM シミュレーション）
-  - 詳細は `tasks-group-b.md` を参照
+  - 詳細は `tasks/group-b.md` を参照
   - 数量算出、コスト概算、干渉チェック
   - _要件: 8, 9, 10_
 
 - [ ] 9. Phase 2: グループ C（工程管理）
-  - 詳細は `tasks-group-c.md` を参照
+  - 詳細は `tasks/group-c.md` を参照
   - 工程情報、ガントチャート、クリティカルパス
   - _要件: 4, 5, 6_
 
@@ -187,17 +187,17 @@
   - 問題があればユーザーに確認
 
 - [ ] 13. Phase 4: グループ D（AI 活用）
-  - 詳細は `tasks-group-d.md` を参照
+  - 詳細は `tasks/group-d.md` を参照
   - AI 構造提案、自然言語モデリング、画像認識
   - _要件: 15, 16, 17_
 
 - [ ] 14. Phase 4: グループ E（建設チェック）
-  - 詳細は `tasks-group-e.md` を参照
+  - 詳細は `tasks/group-e.md` を参照
   - 構造チェック、法規チェック、環境シミュレーション、安全管理
   - _要件: 18, 19, 20, 21_
 
 - [ ] 15. Phase 4: グループ F（データ連携）
-  - 詳細は `tasks-group-f.md` を参照
+  - 詳細は `tasks/group-f.md` を参照
   - ダッシュボード、IFC 入出力、プロジェクト比較
   - _要件: 22, 11, 12, 23_
 
