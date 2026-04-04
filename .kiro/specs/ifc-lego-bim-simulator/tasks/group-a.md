@@ -114,19 +114,19 @@ Phase 1 で実装するグループ A のタスク詳細。ブロックパレッ
     - **Property 5: プロジェクト一覧ソート**
     - **検証対象: 要件 24.6, 24.7**
 
-- [ ] A7. フロントエンド: ページルーティングとレイアウト統合
-  - [ ] A7.1 ページルーティングの設定
+- [x] A7. フロントエンド: ページルーティングとレイアウト統合
+  - [x] A7.1 ページルーティングの設定
     - ProjectListPage、EditorPage、DashboardPage のルーティング設定
     - EditorPage にブロックパレット、3D キャンバス、属性パネルを統合
     - `packages/frontend/src/pages/EditorPage.tsx` を作成
     - _要件: 1.1, 2.1, 3.1, 13.3_
-  - [ ] A7.2 Agent 専用エンドポイント（project 系）の本実装
+  - [x] A7.2 Agent 専用エンドポイント（project 系）の本実装
     - `/api/agent/project/:id`, `/api/agent/projects` のスタブを本実装に置き換え
     - `packages/backend/src/api/agent.ts` を更新
     - _要件: 設計書 Agent 専用エンドポイント_
 
-- [ ] A8. Phase 1 結合テスト
-  - [ ] A8.1 コア機能の結合テスト
+- [x] A8. Phase 1 結合テスト
+  - [x] A8.1 コア機能の結合テスト
     - プロジェクト作成 → ブロック追加 → 属性編集 → 保存 → 再読み込みのフルフロー
     - プロジェクト一覧の検索・ソート・フィルタリング
     - プロジェクト複製・削除・アーカイブ

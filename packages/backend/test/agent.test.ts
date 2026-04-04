@@ -97,10 +97,14 @@ describe('Agent API contract', () => {
 
     const one = await app.request(`/api/agent/project/${p.id}`);
     expect(one.status).toBe(200);
-    AgentProjectDetailResponseSchema.parse(await one.json());
+    const oneJson = await one.json();
+    AgentProjectDetailResponseSchema.parse(oneJson);
+    expect(oneJson).toMatchObject({ _stub: false, _stubLevel: 2 });
 
     const list = await app.request('/api/agent/projects');
     expect(list.status).toBe(200);
-    AgentProjectListResponseSchema.parse(await list.json());
+    const listJson = await list.json();
+    AgentProjectListResponseSchema.parse(listJson);
+    expect(listJson).toMatchObject({ _stub: false, _stubLevel: 2 });
   });
 });

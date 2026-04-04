@@ -16,7 +16,7 @@ import type { AIUsecase } from '../usecases/ai-usecase.js';
 import type { CheckUsecase } from '../usecases/check-usecase.js';
 import type { ProjectUsecase } from '../usecases/project-usecase.js';
 import type { SimulationUsecase } from '../usecases/simulation-usecase.js';
-import { STUB_LEVEL_0 } from './stub.js';
+import { STUB_LEVEL_0, STUB_LEVEL_2_PROJECT } from './stub.js';
 
 const BlocksBodySchema = z.object({
   blocks: z.array(BlockSchema),
@@ -296,7 +296,7 @@ export function createAgentApp(deps: AgentAppDeps) {
     if (!project) {
       return c.json({ error: 'Project not found' }, 404);
     }
-    const raw = { ...project, ...STUB_LEVEL_0 };
+    const raw = { ...project, ...STUB_LEVEL_2_PROJECT };
     return c.json(AgentProjectDetailResponseSchema.parse(raw), 200);
   });
 
@@ -317,7 +317,7 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(projectsListRoute, async (c) => {
     const summaries = await deps.projectUsecase.list();
-    const raw = { projects: summaries, ...STUB_LEVEL_0 };
+    const raw = { projects: summaries, ...STUB_LEVEL_2_PROJECT };
     return c.json(AgentProjectListResponseSchema.parse(raw), 200);
   });
 

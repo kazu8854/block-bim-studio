@@ -45,8 +45,8 @@ export const ArchiveProjectResponseSchema = ProjectSchema.merge(S2proj);
 
 export const DuplicateProjectResponseSchema = ProjectSchema.merge(S2proj);
 
-/** Agent `GET /project/:id` — スタブのまま */
-export const AgentProjectDetailResponseSchema = ProjectSchema.merge(S0);
+/** Agent `GET /project/:id` — Level 2（ProjectUsecase 本実装、`_stub: false`） */
+export const AgentProjectDetailResponseSchema = ProjectSchema.merge(S2proj);
 
 export const QuantitySimulationResponseSchema =
   QuantityResultSchema.merge(S0);
@@ -92,9 +92,9 @@ export const DashboardResponseSchema = DashboardDataSchema.merge(S0);
 
 export const CompareResponseSchema = ProjectCompareResultSchema.merge(S0);
 
-/** Agent API: プロジェクト一覧 */
+/** Agent API: プロジェクト一覧（Level 2） */
 export const AgentProjectListResponseSchema = z
   .object({
     projects: z.array(ProjectSummarySchema),
   })
-  .merge(S0);
+  .merge(S2proj);
