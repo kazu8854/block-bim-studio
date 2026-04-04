@@ -9,18 +9,20 @@ import Table from '@cloudscape-design/components/table';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getProject, updateProject } from '@/api/projects';
+import { Canvas3D } from '@/components/canvas/Canvas3D';
 import { BlockPalette } from '@/components/palette/BlockPalette';
 import { PropertyPanel } from '@/components/properties/PropertyPanel';
-import { useEditorStore } from '@/stores/editorStore';
+import { useCanvasStore } from '@/stores/canvasStore';
+import { useProjectStore } from '@/stores/projectStore';
 
 export function EditorPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const setProject = useEditorStore((s) => s.setProject);
-  const project = useEditorStore((s) => s.project);
-  const selectBlock = useEditorStore((s) => s.selectBlock);
-  const selectedBlockId = useEditorStore((s) => s.selectedBlockId);
-  const addBlockFromCatalog = useEditorStore((s) => s.addBlockFromCatalog);
+  const setProject = useProjectStore((s) => s.setProject);
+  const project = useProjectStore((s) => s.project);
+  const selectBlock = useCanvasStore((s) => s.selectBlock);
+  const selectedBlockId = useCanvasStore((s) => s.selectedBlockId);
+  const addBlockFromCatalog = useProjectStore((s) => s.addBlockFromCatalog);
 
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -114,19 +116,12 @@ export function EditorPage() {
             <BlockPalette onSelectBlock={(e) => addBlockFromCatalog(e)} />
           </SpaceBetween>
           <SpaceBetween size="m">
-            <Header variant="h2">キャンバス（3D は別タスク）</Header>
-            <div
-              style={{
-                minHeight: 200,
-                border: '2px dashed #d5dbdb',
-                borderRadius: 8,
-                padding: 24,
-                textAlign: 'center',
-                color: '#687078',
-              }}
-            >
-              ここに 3D キャンバスが入ります
-            </div>
+            <Header variant="h2">3D キャンバス</Header>
+            <Box fontSize="body-s" color="text-body-secondary">
+              ドラッグでオービット、G / R で移動・回転ハンドル。パレットからブロックを
+              キャンバスへドラッグ＆ドロップできます。Delete で選択ブロックを削除。
+            </Box>
+            <Canvas3D />
             <Header variant="h3">配置ブロック一覧</Header>
             <Table
               trackBy="id"

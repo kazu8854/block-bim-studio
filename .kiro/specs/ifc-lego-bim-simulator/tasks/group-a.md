@@ -57,28 +57,28 @@ Phase 1 で実装するグループ A のタスク詳細。ブロックパレッ
     - **Property 3: ブロックパレット検索フィルタリング**
     - **検証対象: 要件 1.3**
 
-- [ ] A4. フロントエンド: 3D キャンバスの基礎実装
-  - [ ] A4.1 Zustand ストアの実装
+- [x] A4. フロントエンド: 3D キャンバスの基礎実装
+  - [x] A4.1 Zustand ストアの実装
     - `projectStore`（プロジェクト状態）、`canvasStore`（選択、カメラ）を実装
     - `packages/frontend/src/stores/projectStore.ts`, `canvasStore.ts` を作成
     - _要件: 2.1, 13.3_
-  - [ ] A4.2 Canvas3D コンポーネントの実装（React Three Fiber）
+  - [x] A4.2 Canvas3D コンポーネントの実装（React Three Fiber）
     - Three.js シーン、カメラ、ライティング、グリッドの基本セットアップ
     - ズームイン/ズームアウト、オービット操作
     - `packages/frontend/src/components/canvas/Canvas3D.tsx` を作成
     - _要件: 2.5, 2.6_
-  - [ ] A4.3 Block3D コンポーネントの実装
+  - [x] A4.3 Block3D コンポーネントの実装
     - ブロックの 3D メッシュ表現（IFC 要素タイプに応じた形状・色）
     - 選択状態のハイライト表示
     - `packages/frontend/src/components/canvas/Block3D.tsx` を作成
     - _要件: 2.1, 2.2_
-  - [ ] A4.4 ドラッグ＆ドロップの実装
+  - [x] A4.4 ドラッグ＆ドロップの実装
     - ブロックパレットからキャンバスへのドラッグ＆ドロップ
     - キャンバス上でのブロック移動・回転・削除の操作ハンドル
     - `packages/frontend/src/hooks/useDragDrop.ts` を作成
     - `packages/frontend/src/components/canvas/SelectionHandler.tsx` を作成
     - _要件: 2.1, 2.2_
-  - [ ] A4.5 スナップ機能の実装
+  - [x] A4.5 スナップ機能の実装
     - グリッドスナップ、エッジスナップのガイドライン表示
     - 10mm 以内の距離でブロック同士を自動吸着
     - `packages/frontend/src/hooks/useSnap.ts` を作成

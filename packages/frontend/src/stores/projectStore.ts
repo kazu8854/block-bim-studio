@@ -5,16 +5,17 @@ import {
   createDefaultPropertySets,
   ensureDefaultPropertySets,
 } from '@/utils/default-property-sets';
+import { useCanvasStore } from './canvasStore';
 
-type EditorState = {
+type ProjectState = {
   project: Project | null;
-  selectedBlockId: string | null;
   setProject: (project: Project | null) => void;
-  selectBlock: (id: string | null) => void;
-  addBlockFromCatalog: (entry: BlockCatalogEntry) => void;
+  addBlockFromCatalog: (
+    entry: BlockCatalogEntry,
+    position?: { x: number; y: number; z: number },
+  ) => void;
   updateBlock: (block: Block) => void;
   removeBlock: (id: string) => void;
-  clearSelection: () => void;
 };
 
 const zeroVec = (): { x: number; y: number; z: number } => ({
@@ -23,29 +24,32 @@ const zeroVec = (): { x: number; y: number; z: number } => ({
   z: 0,
 });
 
-export const useEditorStore = create<EditorState>((set, get) => ({
+export const useProjectStore = create<ProjectState>((set, get) => ({
   project: null,
-  selectedBlockId: null,
 
-  setProject: (project) =>
-    set({
-      project,
-      selectedBlockId: null,
-    }),
+  setProject: (project) => {
+    useCanvasStore.getState().clearSelection();
+    useCanvasStore.getState().clearSnapGuides();
+    set({ project });
+  },
 
-  selectBlock: (id) => set({ selectedBlockId: id }),
-
-  clearSelection: () => set({ selectedBlockId: null }),
-
-  addBlockFromCatalog: (entry) => {
+  addBlockFromCatalog: (entry, position) => {
     const { project } = get();
     if (!project) return;
+    const pos =
+      position !== undefined
+        ? position
+        : {
+            x: 0,
+            y: entry.defaultDimensions.height / 2,
+            z: 0,
+          };
     const block: Block = ensureDefaultPropertySets({
       id: crypto.randomUUID(),
       name: entry.name,
       ifcType: entry.ifcType,
       category: entry.category,
-      position: zeroVec(),
+      position: { x: pos.x, y: pos.y, z: pos.z },
       rotation: zeroVec(),
       dimensions: { ...entry.defaultDimensions },
       propertySets: createDefaultPropertySets(),
@@ -55,7 +59,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       blocks: [...project.blocks, block],
       updatedAt: new Date().toISOString(),
     };
-    set({ project: next, selectedBlockId: block.id });
+    set({ project: next });
+    useCanvasStore.getState().selectBlock(block.id);
   },
 
   updateBlock: (block) => {
@@ -74,8 +79,9 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   },
 
   removeBlock: (id) => {
-    const { project, selectedBlockId } = get();
+    const { project } = get();
     if (!project) return;
+    const { selectedBlockId } = useCanvasStore.getState();
     set({
       project: {
         ...project,
@@ -83,7 +89,9 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         schedules: project.schedules.filter((s) => s.blockId !== id),
         updatedAt: new Date().toISOString(),
       },
-      selectedBlockId: selectedBlockId === id ? null : selectedBlockId,
     });
+    if (selectedBlockId === id) {
+      useCanvasStore.getState().clearSelection();
+    }
   },
 }));

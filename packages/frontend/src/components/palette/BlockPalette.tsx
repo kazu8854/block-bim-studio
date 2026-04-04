@@ -7,6 +7,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 import type { BlockCategory } from '@block-bim-studio/shared';
 import { useMemo, useState } from 'react';
+import { useDragDrop } from '@/hooks/useDragDrop';
 import {
   type BlockCatalogEntry,
   CATEGORY_LABELS,
@@ -21,6 +22,7 @@ export type BlockPaletteProps = {
 const CATEGORIES: BlockCategory[] = ['structure', 'opening', 'equipment'];
 
 export function BlockPalette({ onSelectBlock }: BlockPaletteProps) {
+  const { setPaletteDragData } = useDragDrop();
   const [activeCategory, setActiveCategory] = useState<BlockCategory>('structure');
   const [search, setSearch] = useState('');
 
@@ -55,6 +57,10 @@ export function BlockPalette({ onSelectBlock }: BlockPaletteProps) {
                     <Box key={entry.id}>
                       <button
                         type="button"
+                        draggable
+                        onDragStart={(e) =>
+                          setPaletteDragData(e.dataTransfer, entry)
+                        }
                         onClick={() => onSelectBlock(entry)}
                         style={{
                           width: '100%',

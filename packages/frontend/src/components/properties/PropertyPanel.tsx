@@ -11,7 +11,8 @@ import Table, { type TableProps } from '@cloudscape-design/components/table';
 import type { Block, PropertySet, PropertyValue } from '@block-bim-studio/shared';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useEditorStore } from '@/stores/editorStore';
+import { useCanvasStore } from '@/stores/canvasStore';
+import { useProjectStore } from '@/stores/projectStore';
 import { isDefaultPropertySetName } from '@/utils/default-property-sets';
 
 const NUMERIC_KEYS = new Set([
@@ -46,10 +47,10 @@ function parsePropertyValue(
 }
 
 export function PropertyPanel() {
-  const project = useEditorStore((s) => s.project);
-  const selectedBlockId = useEditorStore((s) => s.selectedBlockId);
-  const updateBlock = useEditorStore((s) => s.updateBlock);
-  const removeBlock = useEditorStore((s) => s.removeBlock);
+  const project = useProjectStore((s) => s.project);
+  const selectedBlockId = useCanvasStore((s) => s.selectedBlockId);
+  const updateBlock = useProjectStore((s) => s.updateBlock);
+  const removeBlock = useProjectStore((s) => s.removeBlock);
 
   const selected = useMemo(() => {
     if (!project || !selectedBlockId) return null;
@@ -201,8 +202,7 @@ export function PropertyPanel() {
     return (
       <Container header={<Header variant="h2">属性</Header>}>
         <Alert type="info">
-          パレットからブロックを追加するか、一覧からブロックを選択してください（3D
-          キャンバスは別タスク）
+          パレットまたは 3D キャンバスでブロックを選択してください。
         </Alert>
       </Container>
     );
