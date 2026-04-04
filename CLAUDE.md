@@ -5,8 +5,9 @@
 ## Spec ドキュメント
 
 - 要件: `.kiro/specs/ifc-lego-bim-simulator/requirements.md`
-- 設計: `.kiro/specs/ifc-lego-bim-simulator/design.md`
-- タスク: `.kiro/specs/ifc-lego-bim-simulator/tasks*.md`
+- 設計（概要）: `.kiro/specs/ifc-lego-bim-simulator/design.md`
+- 設計（分割）: `.kiro/specs/ifc-lego-bim-simulator/design/*.md`
+- タスク: `.kiro/specs/ifc-lego-bim-simulator/tasks.md` + `tasks/group-*.md`
 
 ## 開発時の注意
 

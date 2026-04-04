@@ -5,11 +5,20 @@ Any AI coding assistant generating code or configurations for this repository MU
 
 ## Spec ドキュメント
 
-本プロジェクトの要件・設計・タスクは以下のファイルで管理されています:
+本プロジェクトの要件・設計・タスクは以下のファイルで管理されています。全部読む必要はありません。担当する作業に必要なファイルだけを参照してください。
+
 - 要件: `.kiro/specs/ifc-lego-bim-simulator/requirements.md`
-- 設計: `.kiro/specs/ifc-lego-bim-simulator/design.md`
+- 設計（概要+リンク集）: `.kiro/specs/ifc-lego-bim-simulator/design.md`
+- 設計（分割）: `.kiro/specs/ifc-lego-bim-simulator/design/` 配下
+  - `architecture.md` — アーキテクチャ・決定事項
+  - `api.md` — API エンドポイント・Agent API・AIPort
+  - `frontend.md` — フロントエンド構成・Shared パッケージ
+  - `data-models.md` — Zod スキーマ・データモデル・ER図
+  - `properties.md` — 正確性プロパティ 26件
+  - `devops.md` — フェーズ戦略・並行開発・バージョニング・マルチAIツール
+  - `testing.md` — テスト戦略・結合テスト計画
 - タスク（メイン）: `.kiro/specs/ifc-lego-bim-simulator/tasks.md`
-- タスク（グループ別）: `.kiro/specs/ifc-lego-bim-simulator/tasks-group-*.md`
+- タスク（グループ別）: `.kiro/specs/ifc-lego-bim-simulator/tasks/group-{a..f}.md`
 - 設計経緯: `.kiro/specs/ifc-lego-bim-simulator/design-evolution.md`
 
 実装前に必ず該当するタスクファイルと設計書を参照してください。
@@ -67,7 +76,7 @@ Any AI coding assistant generating code or configurations for this repository MU
 * Different groups can be at different versions independently.
 
 ## 10. Distributed Development
-* Task files are split by group (`tasks-group-*.md`) to avoid conflicts.
+* Task files are split by group (`tasks/group-*.md`) to avoid conflicts.
 * Use `[-] Task @assignee` format when starting a task.
 * Pull latest before starting any task.
 
