@@ -4,6 +4,8 @@
 
 本プロジェクトはフェーズ別・グループ別の段階的開発を行う。各フェーズの開発ブランチで作業し、完了後に `main` へマージする。
 
+**現在のリモート作業ブランチ:** `cursor-impl`（`origin/cursor-impl`）。旧名 `ph0/initial-setup` はリポジトリ上で統合・削除されている場合があります。ローカルで作業する際は `git fetch origin && git checkout cursor-impl && git pull` のように `cursor-impl` を追跡してください。
+
 ## ブランチ構成
 
 ```
