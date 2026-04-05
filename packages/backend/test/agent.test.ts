@@ -3,6 +3,8 @@ import {
   AgentProjectDetailResponseSchema,
   AgentProjectListResponseSchema,
   AiGenerateFromTextResponseSchema,
+  AiSuggestStructureResponseSchema,
+  buildPropertySetsForNewIfcBlock,
   ClashSimulationResponseSchema,
   CostSimulationResponseSchema,
   QuantitySimulationResponseSchema,
@@ -77,16 +79,24 @@ describe('Agent API contract', () => {
     const app = createTestApp();
     const headers = { 'Content-Type': 'application/json' };
 
+    const ps = buildPropertySetsForNewIfcBlock(
+      'IfcWall',
+      sampleBlock.dimensions,
+    );
+    const blk = () => ({
+      ...sampleBlock,
+      id: crypto.randomUUID(),
+      propertySets: ps,
+    });
     const su = await app.request('/api/agent/suggest-structure', {
       method: 'POST',
       headers,
-      body: JSON.stringify({ blocks: [sampleBlock] }),
+      body: JSON.stringify({ blocks: [blk(), blk(), blk()] }),
     });
     expect(su.status).toBe(200);
-    const suJson = await su.json();
-    expect(suJson._stub).toBe(true);
-    expect(suJson._stubLevel).toBe(0);
-    expect(Array.isArray(suJson.suggestions)).toBe(true);
+    const suParsed = AiSuggestStructureResponseSchema.parse(await su.json());
+    expect(suParsed._stub).toBe(false);
+    expect(suParsed._stubLevel).toBe(2);
 
     const gen = await app.request('/api/agent/generate-blocks', {
       method: 'POST',
@@ -94,7 +104,8 @@ describe('Agent API contract', () => {
       body: JSON.stringify({ description: 'two columns' }),
     });
     expect(gen.status).toBe(200);
-    AiGenerateFromTextResponseSchema.parse(await gen.json());
+    const genParsed = AiGenerateFromTextResponseSchema.parse(await gen.json());
+    expect(genParsed._stubLevel).toBe(2);
   });
 
   it('GET project + projects', async () => {

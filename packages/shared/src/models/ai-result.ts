@@ -18,6 +18,7 @@ export const ImageAnalysisResultSchema = z.object({
     width: z.number(),
     height: z.number(),
   }),
+  message: z.string().optional(),
 });
 
 export const StructureSuggestionSchema = z.object({

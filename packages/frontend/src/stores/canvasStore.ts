@@ -1,3 +1,4 @@
+import type { Block } from '@block-bim-studio/shared';
 import type { Camera, Group, WebGLRenderer } from 'three';
 import { create } from 'zustand';
 
@@ -29,9 +30,13 @@ type CanvasState = {
   orbitEnabled: boolean;
   transformMode: TransformMode;
   snapGuides: SnapGuideSegment[];
+  /** スナップが有効なときガイドを強調（色・太さ） */
+  snapGuideEmphasis: boolean;
   viewport: ViewportBinding | null;
   /** While TransformControls drags this block, skip syncing from project store */
   transformDraggingBlockId: string | null;
+  /** AI 構造提案の半透明プレビュー用（シーンには出すが選択・変形対象外） */
+  aiPreviewBlocks: Block[];
 
   selectBlock: (id: string | null) => void;
   clearSelection: () => void;
@@ -39,10 +44,15 @@ type CanvasState = {
   setCamera: (partial: Partial<CameraPersistState>) => void;
   setOrbitEnabled: (enabled: boolean) => void;
   setTransformMode: (mode: TransformMode) => void;
-  setSnapGuides: (guides: SnapGuideSegment[]) => void;
+  setSnapGuides: (
+    guides: SnapGuideSegment[],
+    emphasis?: boolean,
+  ) => void;
   clearSnapGuides: () => void;
   setViewport: (binding: ViewportBinding | null) => void;
   setTransformDraggingBlockId: (id: string | null) => void;
+  setAiPreviewBlocks: (blocks: Block[]) => void;
+  clearAiPreviewBlocks: () => void;
 };
 
 const defaultCamera: CameraPersistState = {
@@ -57,8 +67,10 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   orbitEnabled: true,
   transformMode: 'translate',
   snapGuides: [],
+  snapGuideEmphasis: false,
   viewport: null,
   transformDraggingBlockId: null,
+  aiPreviewBlocks: [],
 
   selectBlock: (id) => set({ selectedBlockId: id }),
 
@@ -79,12 +91,17 @@ export const useCanvasStore = create<CanvasState>((set) => ({
 
   setTransformMode: (transformMode) => set({ transformMode }),
 
-  setSnapGuides: (snapGuides) => set({ snapGuides }),
+  setSnapGuides: (snapGuides, emphasis = false) =>
+    set({ snapGuides, snapGuideEmphasis: emphasis }),
 
-  clearSnapGuides: () => set({ snapGuides: [] }),
+  clearSnapGuides: () => set({ snapGuides: [], snapGuideEmphasis: false }),
 
   setViewport: (viewport) => set({ viewport }),
 
   setTransformDraggingBlockId: (transformDraggingBlockId) =>
     set({ transformDraggingBlockId }),
+
+  setAiPreviewBlocks: (aiPreviewBlocks) => set({ aiPreviewBlocks }),
+
+  clearAiPreviewBlocks: () => set({ aiPreviewBlocks: [] }),
 }));

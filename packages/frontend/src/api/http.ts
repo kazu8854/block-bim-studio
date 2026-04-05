@@ -16,7 +16,14 @@ export async function fetchJson<T>(
     },
   });
   if (!res.ok) {
-    throw new Error(`リクエストが失敗しました (${String(res.status)})`);
+    const raw = (await res.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(
+      typeof raw?.error === 'string'
+        ? raw.error
+        : `リクエストが失敗しました (${String(res.status)})`,
+    );
   }
   const json = (await res.json()) as T & {
     _stub?: boolean;

@@ -80,14 +80,15 @@ export const SafetyCheckResponseSchema =
 export const AiSuggestStructureResponseSchema = z
   .object({
     suggestions: z.array(StructureSuggestionSchema),
+    message: z.string().optional(),
   })
-  .merge(S0);
+  .merge(S2sim);
 
 export const AiGenerateFromTextResponseSchema =
-  BlockGenerationResultSchema.merge(S0);
+  BlockGenerationResultSchema.merge(S2sim);
 
 export const AiGenerateFromImageResponseSchema =
-  ImageAnalysisResultSchema.merge(S0);
+  ImageAnalysisResultSchema.merge(S2sim);
 
 export const IfcExportResponseSchema = IfcExportResultSchema.merge(S2sim);
 

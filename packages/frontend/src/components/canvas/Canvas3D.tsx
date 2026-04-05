@@ -64,6 +64,7 @@ function CameraControls() {
 
 function SceneContent() {
   const blocks = useProjectStore((s) => s.project?.blocks ?? []);
+  const aiPreviewBlocks = useCanvasStore((s) => s.aiPreviewBlocks);
   const selectedId = useCanvasStore((s) => s.selectedBlockId);
   const clearSelection = useCanvasStore((s) => s.clearSelection);
 
@@ -99,6 +100,9 @@ function SceneContent() {
       </mesh>
       {blocks.map((b) => (
         <Block3D key={b.id} block={b} selected={b.id === selectedId} />
+      ))}
+      {aiPreviewBlocks.map((b) => (
+        <Block3D key={`ai-${b.id}`} block={b} selected={false} ghost />
       ))}
       <SelectionHandler />
       <SnapGuide />
@@ -143,14 +147,18 @@ export function Canvas3D() {
     if (placed && proj) {
       const { position, guides } = snapBlockPlacementXZ(placed, proj.blocks);
       useProjectStore.getState().updateBlock({ ...placed, position });
-      useCanvasStore.getState().setSnapGuides(guides);
-      window.setTimeout(() => useCanvasStore.getState().clearSnapGuides(), 900);
+      useCanvasStore.getState().setSnapGuides(guides, guides.length > 0);
+      window.setTimeout(() => useCanvasStore.getState().clearSnapGuides(), 3200);
     }
   };
 
   return (
     <div
-      style={{ height: 420, width: '100%', minHeight: 280 }}
+      style={{
+        width: '100%',
+        minHeight: 280,
+        height: 'clamp(280px, 42vh, 520px)',
+      }}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >

@@ -35,6 +35,14 @@ function parsePositiveDim(raw: string): { ok: true; value: number } | { ok: fals
   return { ok: true, value: n };
 }
 
+function canCommitSpatialNumber(raw: string): boolean {
+  const t = raw.trim();
+  if (t === '' || t === '-' || t === '.' || t === '-.') return false;
+  if (t.endsWith('.')) return false;
+  const n = Number(t);
+  return Number.isFinite(n);
+}
+
 function parsePropertyValue(
   key: string,
   raw: string,
@@ -70,6 +78,17 @@ export function PropertyPanel() {
   const [modalVisible, setModalVisible] = useState(false);
   const [newPsetName, setNewPsetName] = useState('');
   const [dimInputs, setDimInputs] = useState({ w: '', h: '', d: '' });
+  const [tfInputs, setTfInputs] = useState({
+    px: '',
+    py: '',
+    pz: '',
+    rx: '',
+    ry: '',
+    rz: '',
+  });
+  const [tfErrors, setTfErrors] = useState<
+    Partial<Record<'px' | 'py' | 'pz' | 'rx' | 'ry' | 'rz', string>>
+  >({});
 
   useEffect(() => {
     if (selected) {
@@ -79,8 +98,17 @@ export function PropertyPanel() {
         h: String(selected.dimensions.height),
         d: String(selected.dimensions.depth),
       });
+      setTfInputs({
+        px: String(selected.position.x),
+        py: String(selected.position.y),
+        pz: String(selected.position.z),
+        rx: String(selected.rotation.x),
+        ry: String(selected.rotation.y),
+        rz: String(selected.rotation.z),
+      });
       setDimErrors({});
       setPropErrors({});
+      setTfErrors({});
     } else {
       setDraft(null);
     }
@@ -105,6 +133,74 @@ export function PropertyPanel() {
     updateBlock(next);
     setDraft(next);
   }, [draft, dimInputs, propErrors, updateBlock]);
+
+  const updatePositionField = (
+    axis: 'x' | 'y' | 'z',
+    inputKey: 'px' | 'py' | 'pz',
+    raw: string,
+  ) => {
+    setTfInputs((prev) => ({ ...prev, [inputKey]: raw }));
+    if (!canCommitSpatialNumber(raw)) {
+      setTfErrors((e) => {
+        const next = { ...e };
+        const t = raw.trim();
+        if (t === '' || t === '-' || t === '.' || t === '-.' || t.endsWith('.')) {
+          delete next[inputKey];
+        } else {
+          next[inputKey] = '数値として解釈できません';
+        }
+        return next;
+      });
+      return;
+    }
+    setTfErrors((e) => {
+      const next = { ...e };
+      delete next[inputKey];
+      return next;
+    });
+    if (!draft) return;
+    const n = Number(raw.trim());
+    const next: Block = {
+      ...draft,
+      position: { ...draft.position, [axis]: n },
+    };
+    updateBlock(next);
+    setDraft(next);
+  };
+
+  const updateRotationField = (
+    axis: 'x' | 'y' | 'z',
+    inputKey: 'rx' | 'ry' | 'rz',
+    raw: string,
+  ) => {
+    setTfInputs((prev) => ({ ...prev, [inputKey]: raw }));
+    if (!canCommitSpatialNumber(raw)) {
+      setTfErrors((e) => {
+        const next = { ...e };
+        const t = raw.trim();
+        if (t === '' || t === '-' || t === '.' || t === '-.' || t.endsWith('.')) {
+          delete next[inputKey];
+        } else {
+          next[inputKey] = '数値として解釈できません';
+        }
+        return next;
+      });
+      return;
+    }
+    setTfErrors((e) => {
+      const next = { ...e };
+      delete next[inputKey];
+      return next;
+    });
+    if (!draft) return;
+    const n = Number(raw.trim());
+    const next: Block = {
+      ...draft,
+      rotation: { ...draft.rotation, [axis]: n },
+    };
+    updateBlock(next);
+    setDraft(next);
+  };
 
   const updateDimensionInput = (
     key: 'w' | 'h' | 'd',
@@ -213,7 +309,8 @@ export function PropertyPanel() {
 
   const hasErrors =
     Object.values(dimErrors).some(Boolean) ||
-    Object.values(propErrors).some(Boolean);
+    Object.values(propErrors).some(Boolean) ||
+    Object.values(tfErrors).some(Boolean);
 
   const dimW = dimInputs.w;
   const dimH = dimInputs.h;
@@ -261,6 +358,68 @@ export function PropertyPanel() {
                   <FormField label="カテゴリ">
                     <Box>{draft.category}</Box>
                   </FormField>
+
+                  <Header variant="h3">位置 (m)</Header>
+                  <Box fontSize="body-s" color="text-body-secondary">
+                    値を変更すると 3D キャンバスにすぐ反映されます（Three.js の座標系）。
+                  </Box>
+                  <ColumnFields>
+                    <FormField label="X" errorText={tfErrors.px}>
+                      <Input
+                        value={tfInputs.px}
+                        onChange={({ detail }) =>
+                          updatePositionField('x', 'px', detail.value)
+                        }
+                      />
+                    </FormField>
+                    <FormField label="Y" errorText={tfErrors.py}>
+                      <Input
+                        value={tfInputs.py}
+                        onChange={({ detail }) =>
+                          updatePositionField('y', 'py', detail.value)
+                        }
+                      />
+                    </FormField>
+                    <FormField label="Z" errorText={tfErrors.pz}>
+                      <Input
+                        value={tfInputs.pz}
+                        onChange={({ detail }) =>
+                          updatePositionField('z', 'pz', detail.value)
+                        }
+                      />
+                    </FormField>
+                  </ColumnFields>
+
+                  <Header variant="h3">回転 (rad)</Header>
+                  <Box fontSize="body-s" color="text-body-secondary">
+                    オイラー角（ラジアン）。G / R キーで移動・回転ハンドルを切り替えられます。
+                  </Box>
+                  <ColumnFields>
+                    <FormField label="X" errorText={tfErrors.rx}>
+                      <Input
+                        value={tfInputs.rx}
+                        onChange={({ detail }) =>
+                          updateRotationField('x', 'rx', detail.value)
+                        }
+                      />
+                    </FormField>
+                    <FormField label="Y" errorText={tfErrors.ry}>
+                      <Input
+                        value={tfInputs.ry}
+                        onChange={({ detail }) =>
+                          updateRotationField('y', 'ry', detail.value)
+                        }
+                      />
+                    </FormField>
+                    <FormField label="Z" errorText={tfErrors.rz}>
+                      <Input
+                        value={tfInputs.rz}
+                        onChange={({ detail }) =>
+                          updateRotationField('z', 'rz', detail.value)
+                        }
+                      />
+                    </FormField>
+                  </ColumnFields>
 
                   <Header variant="h3">寸法 (m)</Header>
                   <ColumnFields>
@@ -384,7 +543,7 @@ function ColumnFields({ children }: { children: ReactNode }) {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))',
         gap: '1rem',
       }}
     >

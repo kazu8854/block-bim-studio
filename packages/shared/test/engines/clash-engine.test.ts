@@ -1,6 +1,9 @@
 import type { Block } from '../../src/models/block.js';
 import { describe, expect, it } from 'vitest';
-import { detectClashesFromBlocks } from '../../src/engines/clash-engine.js';
+import {
+  detectClashesFromBlocks,
+  detectClashesFromBlocksBrute,
+} from '../../src/engines/clash-engine.js';
 
 function box(
   id: string,
@@ -55,5 +58,34 @@ describe('clash-engine Level 2', () => {
     });
     const r = detectClashesFromBlocks([a, b]);
     expect(r.clashes).toHaveLength(0);
+  });
+
+  it('格子ブロードフェーズは総当たりと同じ干渉集合を返す', () => {
+    const mk = (i: number, x: number, y: number, z: number): Block => ({
+      id: `10000000-0000-4000-8000-${String(i).padStart(12, '0')}`,
+      name: 'B',
+      ifcType: 'IfcWall',
+      category: 'structure',
+      position: { x, y, z },
+      rotation: { x: 0, y: 0, z: 0 },
+      dimensions: { width: 0.8, height: 0.8, depth: 0.8 },
+      propertySets: [],
+    });
+    const blocks: Block[] = [];
+    for (let i = 0; i < 48; i++) {
+      const gx = (i % 8) * 3;
+      const gy = Math.floor(i / 8) % 3;
+      const gz = Math.floor(i / 24) * 3;
+      blocks.push(mk(i + 1, gx, gy + 0.5, gz));
+    }
+    const grid = detectClashesFromBlocks(blocks);
+    const brute = detectClashesFromBlocksBrute(blocks);
+    expect(grid.clashes).toHaveLength(brute.clashes.length);
+    const key = (c: (typeof grid.clashes)[0]) =>
+      [c.blockIdA, c.blockIdB].sort().join('|');
+    const gSet = new Set(grid.clashes.map(key));
+    for (const c of brute.clashes) {
+      expect(gSet.has(key(c))).toBe(true);
+    }
   });
 });

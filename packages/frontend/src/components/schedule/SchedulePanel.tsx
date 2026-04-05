@@ -7,20 +7,48 @@ import {
   CriticalPathResponseSchema,
   GanttResponseSchema,
 } from '@block-bim-studio/shared';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { stripStub } from '@/api/stub';
 import {
   GanttChartSection,
   type GanttScale,
 } from '@/components/gantt/GanttChart';
+import { Schedule4DControls } from '@/components/schedule/Schedule4DControls';
+import { useProjectStore } from '@/stores/projectStore';
+import { useSchedule4dStore } from '@/stores/schedule4dStore';
 
 const jsonHeaders = { 'Content-Type': 'application/json' };
+
+function GanttWith4DPlayhead(props: {
+  data: GanttChartData | null;
+  criticalIds: ReadonlySet<string>;
+  scale: GanttScale;
+  onScaleChange: (s: GanttScale) => void;
+}) {
+  const active = useSchedule4dStore((s) => s.active);
+  const virtualDay = useSchedule4dStore((s) => s.virtualDay);
+  return (
+    <GanttChartSection
+      data={props.data}
+      criticalIds={props.criticalIds}
+      scale={props.scale}
+      onScaleChange={props.onScaleChange}
+      playheadUtcDay={active ? virtualDay : null}
+    />
+  );
+}
 
 export type SchedulePanelProps = {
   projectId: string | undefined;
 };
 
 export function SchedulePanel({ projectId }: SchedulePanelProps) {
+  const project = useProjectStore((s) => s.project);
+  const sync4d = useSchedule4dStore((s) => s.syncFromProject);
+  useEffect(() => {
+    sync4d(project ?? null);
+  }, [project, sync4d]);
+
   const [gantt, setGantt] = useState<GanttChartData | null>(null);
   const [cp, setCp] = useState<ReturnType<
     typeof CriticalPathResponseSchema.parse
@@ -97,7 +125,9 @@ export function SchedulePanel({ projectId }: SchedulePanelProps) {
       {error ? <Box color="text-status-error">{error}</Box> : null}
       {loading ? <Box color="text-body-secondary">読み込み中…</Box> : null}
 
-      <GanttChartSection
+      <Schedule4DControls />
+
+      <GanttWith4DPlayhead
         data={gantt}
         criticalIds={criticalSet}
         scale={scale}

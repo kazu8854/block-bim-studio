@@ -1,5 +1,4 @@
 import Box from '@cloudscape-design/components/box';
-import SpaceBetween from '@cloudscape-design/components/space-between';
 import type { ReactNode } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
@@ -33,11 +32,18 @@ export function AppLayout() {
         variant="div"
         margin={{ bottom: 'xs' }}
       >
-        <SpaceBetween direction="horizontal" size="l">
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: '12px 28px',
+          }}
+        >
           <NavLink to="/">プロジェクト一覧</NavLink>
           <NavLink to="/dashboard">ダッシュボード</NavLink>
           <NavLink to="/compare">プロジェクト比較</NavLink>
-        </SpaceBetween>
+        </div>
       </Box>
       <Outlet />
     </Box>

@@ -1,7 +1,7 @@
 import type { Block } from '@block-bim-studio/shared';
 
-/** 10mm — block-to-block auto snap range (meters) */
-export const SNAP_TOLERANCE_M = 0.01;
+/** ブロック同士の面スナップ許容距離（m）。100mm 以上で粗めの配置に対応 */
+export const SNAP_TOLERANCE_M = 0.12;
 
 /** Grid step for placement (meters) */
 export const GRID_STEP_M = 0.1;

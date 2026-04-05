@@ -17,6 +17,7 @@
     "dev:mock": "tsx watch src/dev.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1024.0",
     "@block-bim-studio/shared": "*",
     "@hono/zod-openapi": "^0.18.4",
     "@hono/zod-validator": "^0.4.2",

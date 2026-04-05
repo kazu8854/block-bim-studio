@@ -8,19 +8,15 @@ import Button from '@cloudscape-design/components/button';
 import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Table from '@cloudscape-design/components/table';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { compareProjects } from '@/api/compare';
 import { listProjects } from '@/api/projects';
-import {
-  Bar,
-  BarChart,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+
+const CompareCharts = lazy(async () => {
+  const m = await import('@/pages/CompareCharts');
+  return { default: m.CompareCharts };
+});
 
 function resultToCsv(r: ProjectCompareResult): string {
   const header = ['metric', ...r.projects.map((p) => p.name)];
@@ -151,25 +147,15 @@ export function ComparePage() {
         {result && !result.message && result.projects.length >= 2 ? (
           <SpaceBetween size="l">
             <Header variant="h2">コスト概算の比較</Header>
-            <div style={{ width: '100%', height: 320 }}>
-              <ResponsiveContainer>
-                <BarChart data={chartData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip
-                    formatter={(v) =>
-                      new Intl.NumberFormat('ja-JP', {
-                        style: 'currency',
-                        currency: 'JPY',
-                        maximumFractionDigits: 0,
-                      }).format(Number(v))
-                    }
-                  />
-                  <Legend />
-                  <Bar dataKey="cost" name="コスト概算" fill="#0972d3" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <Suspense
+              fallback={
+                <Box color="text-body-secondary" padding="m">
+                  グラフを読み込み中…
+                </Box>
+              }
+            >
+              <CompareCharts chartData={chartData} />
+            </Suspense>
 
             <Header variant="h2">指標テーブル</Header>
             <Table<CompareMetricDelta>

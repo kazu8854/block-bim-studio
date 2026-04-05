@@ -2,6 +2,7 @@ import {
   AgentProjectDetailResponseSchema,
   AgentProjectListResponseSchema,
   AiGenerateFromTextResponseSchema,
+  AiSuggestStructureResponseSchema,
   BlockSchema,
   ClashSimulationResponseSchema,
   CostSimulationResponseSchema,
@@ -9,18 +10,14 @@ import {
   QuantitySimulationResponseSchema,
   RegulationCheckResponseSchema,
   StructureCheckResponseSchema,
-  StructureSuggestionSchema,
 } from '@block-bim-studio/shared';
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import type { AIUsecase } from '../usecases/ai-usecase.js';
 import type { CheckUsecase } from '../usecases/check-usecase.js';
 import type { ProjectUsecase } from '../usecases/project-usecase.js';
 import type { SimulationUsecase } from '../usecases/simulation-usecase.js';
-import {
-  STUB_LEVEL_0,
-  STUB_LEVEL_2_PROJECT,
-  STUB_LEVEL_2_SIMULATION,
-} from './stub.js';
+import { STUB_LEVEL_2_PROJECT, STUB_LEVEL_2_SIMULATION } from './stub.js';
+import { AI_TEXT_MAX_LENGTH } from '../usecases/ai-usecase.js';
 
 const BlocksBodySchema = z.object({
   blocks: z.array(BlockSchema),
@@ -32,19 +29,8 @@ const RegulationBodySchema = z.object({
 });
 
 const GenerateBlocksBodySchema = z.object({
-  description: z.string().min(1),
+  description: z.string().min(1).max(AI_TEXT_MAX_LENGTH),
 });
-
-const AgentSuggestResponseSchema = z
-  .object({
-    suggestions: z.array(StructureSuggestionSchema),
-  })
-  .merge(
-    z.object({
-      _stub: z.literal(true),
-      _stubLevel: z.literal(0),
-    }),
-  );
 
 export type AgentAppDeps = {
   simulationUsecase: SimulationUsecase;
@@ -238,7 +224,7 @@ export function createAgentApp(deps: AgentAppDeps) {
         description: 'Structure suggestions (stub)',
         content: {
           'application/json': {
-            schema: AgentSuggestResponseSchema,
+            schema: AiSuggestStructureResponseSchema,
           },
         },
       },
@@ -247,9 +233,13 @@ export function createAgentApp(deps: AgentAppDeps) {
 
   app.openapi(suggestRoute, async (c) => {
     const { blocks } = c.req.valid('json');
-    const suggestions = await deps.aiUsecase.suggestFromBlocks(blocks);
-    const raw = { suggestions, ...STUB_LEVEL_0 };
-    return c.json(AgentSuggestResponseSchema.parse(raw), 200);
+    const outcome = await deps.aiUsecase.suggestFromBlocks(blocks);
+    const raw = {
+      suggestions: outcome.suggestions,
+      message: outcome.message,
+      ...STUB_LEVEL_2_SIMULATION,
+    };
+    return c.json(AiSuggestStructureResponseSchema.parse(raw), 200);
   });
 
   const generateRoute = createRoute({
@@ -279,7 +269,7 @@ export function createAgentApp(deps: AgentAppDeps) {
   app.openapi(generateRoute, async (c) => {
     const { description } = c.req.valid('json');
     const result = await deps.aiUsecase.generateFromText(description);
-    const raw = { ...result, ...STUB_LEVEL_0 };
+    const raw = { ...result, ...STUB_LEVEL_2_SIMULATION };
     return c.json(AiGenerateFromTextResponseSchema.parse(raw), 200);
   });
 

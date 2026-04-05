@@ -1,9 +1,12 @@
 import { TransformControls } from '@react-three/drei';
 import { useCallback, useEffect, useRef } from 'react';
 import type { TransformControls as TransformControlsImpl } from 'three-stdlib';
+import { useSnap } from '@/hooks/useSnap';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useProjectStore } from '@/stores/projectStore';
-import { useSnap } from '@/hooks/useSnap';
+import { GRID_STEP_M } from '@/utils/snap-placement';
+
+const SNAP_GUIDE_MS = 3200;
 
 function isTextInputTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -51,8 +54,8 @@ export function SelectionHandler() {
       position,
       rotation: { x: rot.x, y: rot.y, z: rot.z },
     });
-    setSnapGuides(guides);
-    window.setTimeout(() => clearSnapGuides(), 900);
+    setSnapGuides(guides, guides.length > 0);
+    window.setTimeout(() => clearSnapGuides(), SNAP_GUIDE_MS);
   }, [block, object, project, snapBlockXZ, updateBlock, setSnapGuides, clearSnapGuides]);
 
   const commitRotate = useCallback(() => {
@@ -91,7 +94,10 @@ export function SelectionHandler() {
       useCanvasStore
         .getState()
         .setTransformDraggingBlockId(e.value ? block.id : null);
-      if (e.value) return;
+      if (e.value) {
+        clearSnapGuides();
+        return;
+      }
       const mode = useCanvasStore.getState().transformMode;
       if (mode === 'translate') commitTranslate();
       else commitRotate();
@@ -105,7 +111,41 @@ export function SelectionHandler() {
     return () => {
       tce.removeEventListener('dragging-changed', onDraggingChanged);
     };
-  }, [block, commitTranslate, commitRotate, setOrbitEnabled]);
+  }, [
+    block,
+    commitTranslate,
+    commitRotate,
+    setOrbitEnabled,
+    clearSnapGuides,
+  ]);
+
+  const onObjectChange = useCallback(() => {
+    const st = useCanvasStore.getState();
+    const bid = st.transformDraggingBlockId;
+    if (!bid || !object) return;
+    if (st.transformMode === 'rotate') {
+      st.clearSnapGuides();
+      return;
+    }
+    if (st.transformMode !== 'translate') return;
+    const proj = useProjectStore.getState().project;
+    if (!proj) return;
+    const blk = proj.blocks.find((b) => b.id === bid);
+    if (!blk) return;
+    const pos = object.position;
+    const rot = object.rotation;
+    const draft = {
+      ...blk,
+      position: { x: pos.x, y: pos.y, z: pos.z },
+      rotation: { x: rot.x, y: rot.y, z: rot.z },
+    };
+    const { position, guides } = snapBlockXZ(draft, proj.blocks, {
+      x: pos.x,
+      z: pos.z,
+    });
+    object.position.set(position.x, position.y, position.z);
+    st.setSnapGuides(guides, guides.length > 0);
+  }, [object, snapBlockXZ]);
 
   if (!object || !block) return null;
 
@@ -114,6 +154,10 @@ export function SelectionHandler() {
       ref={tcRef}
       object={object as never}
       mode={transformMode}
+      size={1.28}
+      translationSnap={transformMode === 'translate' ? GRID_STEP_M : undefined}
+      rotationSnap={transformMode === 'rotate' ? Math.PI / 12 : undefined}
+      onObjectChange={onObjectChange}
     />
   );
 }

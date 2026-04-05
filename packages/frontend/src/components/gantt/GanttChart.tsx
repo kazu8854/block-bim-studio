@@ -18,6 +18,8 @@ export type GanttChartProps = {
   data: GanttChartData;
   criticalBlockIds?: ReadonlySet<string>;
   scale: GanttScale;
+  /** 4D 再生位置（UTC 日インデックス）。未指定なら非表示 */
+  playheadUtcDay?: number | null;
 };
 
 function pxPerDay(scale: GanttScale): number {
@@ -51,7 +53,12 @@ function taskIndexMap(tasks: GanttTaskRow[]): Map<string, number> {
   return m;
 }
 
-export function GanttChart({ data, criticalBlockIds, scale }: GanttChartProps) {
+export function GanttChart({
+  data,
+  criticalBlockIds,
+  scale,
+  playheadUtcDay,
+}: GanttChartProps) {
   const { tasks, dependencyEdges, scaleStart, scaleEnd, message } = data;
   const [detailTask, setDetailTask] = useState<GanttTaskRow | null>(null);
 
@@ -160,6 +167,27 @@ export function GanttChart({ data, criticalBlockIds, scale }: GanttChartProps) {
               markerEnd="url(#gantt-arrow)"
             />
           ))}
+          {playheadUtcDay != null &&
+          Number.isFinite(playheadUtcDay) &&
+          tasks.length > 0 ? (
+            <line
+              x1={Math.min(
+                svgW - 1,
+                Math.max(LABEL_W, LABEL_W + (playheadUtcDay - minD) * px),
+              )}
+              x2={Math.min(
+                svgW - 1,
+                Math.max(LABEL_W, LABEL_W + (playheadUtcDay - minD) * px),
+              )}
+              y1={0}
+              y2={svgH}
+              stroke="#d13212"
+              strokeWidth={2}
+              strokeDasharray="4 3"
+              opacity={0.95}
+              pointerEvents="none"
+            />
+          ) : null}
           {tasks.map((t, i) => {
             const { left, width } = barLeftWidth(t, minD, px);
             const y = PAD_Y + i * ROW_H;
@@ -255,6 +283,7 @@ export function GanttChartSection(props: {
   criticalIds: ReadonlySet<string>;
   scale: GanttScale;
   onScaleChange: (s: GanttScale) => void;
+  playheadUtcDay?: number | null;
 }) {
   return (
     <SpaceBetween size="m">
@@ -274,6 +303,7 @@ export function GanttChartSection(props: {
           data={props.data}
           criticalBlockIds={props.criticalIds}
           scale={props.scale}
+          playheadUtcDay={props.playheadUtcDay}
         />
       ) : (
         <Box color="text-body-secondary">読み込み後に表示されます。</Box>
