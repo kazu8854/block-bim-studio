@@ -1,3 +1,8 @@
+/**
+ * Hono `hc` クライアント（現状未使用）。
+ * プロジェクト API は {@link ./projects.ts} で相対パス `fetch('/api/...')` + Zod により
+ * Vite proxy 経由のリクエストとレスポンス契約を明示している。
+ */
 import { hc } from 'hono/client';
 
 function baseUrl(): string {

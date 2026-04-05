@@ -1,10 +1,14 @@
+import type { SafetySimulationResult } from '@block-bim-studio/shared';
 import { useCheckStore } from '@/stores/checkStore';
 import { useProjectStore } from '@/stores/projectStore';
+import { EMPTY_BLOCK_ARRAY } from '@/utils/empty-collections';
+
+const EMPTY_HAZARDS: SafetySimulationResult['hazards'] = [];
 
 /** 安全管理で検出されたブロック上に赤い警告マーカー（E6.2） */
 export function CheckSafetyOverlay() {
-  const hazards = useCheckStore((s) => s.safety?.hazards ?? []);
-  const blocks = useProjectStore((s) => s.project?.blocks ?? []);
+  const hazards = useCheckStore((s) => s.safety?.hazards ?? EMPTY_HAZARDS);
+  const blocks = useProjectStore((s) => s.project?.blocks ?? EMPTY_BLOCK_ARRAY);
   const ids = new Set<string>();
   for (const h of hazards) {
     for (const id of h.blockIds) {

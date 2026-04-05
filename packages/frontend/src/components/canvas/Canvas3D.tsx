@@ -9,6 +9,7 @@ import { snapBlockPlacementXZ } from '@/utils/snap-placement';
 import { useCanvasStore } from '@/stores/canvasStore';
 import { useProjectStore } from '@/stores/projectStore';
 import { clientPointToFloor } from '@/utils/canvas-raycast';
+import { EMPTY_BLOCK_ARRAY } from '@/utils/empty-collections';
 import { Block3D } from './Block3D';
 import { SelectionHandler } from './SelectionHandler';
 import { CheckSafetyOverlay } from './CheckSafetyOverlay';
@@ -63,7 +64,7 @@ function CameraControls() {
 }
 
 function SceneContent() {
-  const blocks = useProjectStore((s) => s.project?.blocks ?? []);
+  const blocks = useProjectStore((s) => s.project?.blocks ?? EMPTY_BLOCK_ARRAY);
   const aiPreviewBlocks = useCanvasStore((s) => s.aiPreviewBlocks);
   const selectedId = useCanvasStore((s) => s.selectedBlockId);
   const clearSelection = useCanvasStore((s) => s.clearSelection);

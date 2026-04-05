@@ -1,12 +1,16 @@
 import { Html } from '@react-three/drei';
+import type { ClashResult } from '@block-bim-studio/shared';
 import { isoFromUtcDayIndex } from '@block-bim-studio/shared';
 import { useSchedule4dStore } from '@/stores/schedule4dStore';
 import { useSimulationStore } from '@/stores/simulationStore';
 import { Simulation4DTick } from './Simulation4DTick';
 
+/** `?? []` は毎回新配列になり useSyncExternalStore が無限ループするため固定参照を使う */
+const EMPTY_CLASHES: ClashResult['clashes'] = [];
+
 /** 干渉候補点・4D タイマー（B5.2 / Phase 3.3） */
 export function SimulationOverlay() {
-  const clashes = useSimulationStore((s) => s.clash?.clashes ?? []);
+  const clashes = useSimulationStore((s) => s.clash?.clashes ?? EMPTY_CLASHES);
   const fourDActive = useSchedule4dStore((s) => s.active);
   const fourDPlaying = useSchedule4dStore((s) => s.playing);
   const fourDVirtual = useSchedule4dStore((s) => s.virtualDay);

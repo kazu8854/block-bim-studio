@@ -27,6 +27,7 @@ export function ProjectListPage() {
   const [newName, setNewName] = useState('');
   const [siteArea, setSiteArea] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -47,7 +48,7 @@ export function ProjectListPage() {
 
   const submitCreate = async () => {
     const name = newName.trim();
-    if (!name) return;
+    if (!name || creating) return;
     let metadata: ProjectMetadata | undefined;
     const sa = siteArea.trim();
     if (sa !== '') {
@@ -58,15 +59,27 @@ export function ProjectListPage() {
       }
       metadata = { siteArea: n };
     }
+    setCreating(true);
+    setError(null);
     try {
       const p = await createProject({ name, metadata });
       setCreateOpen(false);
       setNewName('');
       setSiteArea('');
-      await refresh();
+      // 一覧の再取得に失敗してもエディタへ遷移できるように先に遷移する
       navigate(`/editor/${p.id}`);
+      void refresh().catch((err) => {
+        console.error('プロジェクト一覧の再取得に失敗しました', err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : '一覧の更新に失敗しました（エディタは開いています）',
+        );
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : '作成に失敗しました');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -142,7 +155,8 @@ export function ProjectListPage() {
               </Button>
               <Button
                 variant="primary"
-                disabled={!newName.trim()}
+                disabled={!newName.trim() || creating}
+                loading={creating}
                 onClick={() => void submitCreate()}
               >
                 作成
